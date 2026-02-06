@@ -12,7 +12,7 @@ JobDigest delivers automated job searching through eight phases, starting with C
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Infrastructure** - Extension scaffolding, service worker lifecycle, storage patterns
+- [x] **Phase 1: Foundation & Infrastructure** - Extension scaffolding, service worker lifecycle, storage patterns
 - [ ] **Phase 2: Resume Management** - Upload/parse PDF/DOCX/text, store resume for AI features
 - [ ] **Phase 3: Job Fetching & Scheduling** - Adzuna/JSearch API integration, daily alarms, batch processing
 - [ ] **Phase 4: AI Scoring** - Claude API integration, job-resume matching with 0-100 scores
@@ -36,10 +36,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Manifest V3 scaffolding, storage abstraction, error handling infrastructure
-- [ ] 01-02-PLAN.md — Service worker lifecycle management, keep-alive, daily cap
-- [ ] 01-03-PLAN.md — Onboarding wizard and settings page for API key configuration
-- [ ] 01-04-PLAN.md — Integration verification and human acceptance testing
+- [x] 01-01-PLAN.md — Manifest V3 scaffolding, storage abstraction, error handling infrastructure
+- [x] 01-02-PLAN.md — Service worker lifecycle management, keep-alive, daily cap
+- [x] 01-03-PLAN.md — Onboarding wizard and settings page for API key configuration
+- [x] 01-04-PLAN.md — Integration verification and human acceptance testing
 
 ### Phase 2: Resume Management
 **Goal**: Users can upload resume in multiple formats (PDF/DOCX/text) which is parsed and stored for AI scoring
@@ -153,7 +153,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Infrastructure | 0/4 | Planning complete | - |
+| 1. Foundation & Infrastructure | 4/4 | Complete | 2026-02-05 |
 | 2. Resume Management | 0/TBD | Not started | - |
 | 3. Job Fetching & Scheduling | 0/TBD | Not started | - |
 | 4. AI Scoring | 0/TBD | Not started | - |
@@ -164,4 +164,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-05*
+*Last updated: 2026-02-05* (Phase 1 complete)
