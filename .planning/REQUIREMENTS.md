@@ -142,13 +142,70 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (To be filled by roadmapper) | | |
+| RESUME-01 | Phase 2 | Pending |
+| RESUME-02 | Phase 2 | Pending |
+| RESUME-03 | Phase 2 | Pending |
+| RESUME-04 | Phase 2 | Pending |
+| FETCH-01 | Phase 3 | Pending |
+| FETCH-02 | Phase 3 | Pending |
+| FETCH-03 | Phase 3 | Pending |
+| FETCH-04 | Phase 3 | Pending |
+| FETCH-05 | Phase 3 | Pending |
+| FETCH-06 | Phase 3 | Pending |
+| FETCH-07 | Phase 3 | Pending |
+| SCORE-01 | Phase 4 | Pending |
+| SCORE-02 | Phase 4 | Pending |
+| SCORE-03 | Phase 4 | Pending |
+| SCORE-04 | Phase 4 | Pending |
+| SCORE-05 | Phase 4 | Pending |
+| SCORE-06 | Phase 4 | Pending |
+| SCORE-07 | Phase 4 | Pending |
+| CONTENT-01 | Phase 7 | Pending |
+| CONTENT-02 | Phase 7 | Pending |
+| CONTENT-03 | Phase 7 | Pending |
+| CONTENT-04 | Phase 7 | Pending |
+| DASH-01 | Phase 5 | Pending |
+| DASH-02 | Phase 5 | Pending |
+| DASH-03 | Phase 5 | Pending |
+| DASH-04 | Phase 5 | Pending |
+| DASH-05 | Phase 5 | Pending |
+| DASH-06 | Phase 5 | Pending |
+| DASH-07 | Phase 5 | Pending |
+| TRACK-01 | Phase 6 | Pending |
+| TRACK-02 | Phase 6 | Pending |
+| TRACK-03 | Phase 6 | Pending |
+| TRACK-04 | Phase 6 | Pending |
+| TRACK-05 | Phase 6 | Pending |
+| TRACK-06 | Phase 6 | Pending |
+| TRACK-07 | Phase 7 | Pending |
+| TRACK-08 | Phase 7 | Pending |
+| TRACK-09 | Phase 6 | Pending |
+| EXPORT-01 | Phase 8 | Pending |
+| EXPORT-02 | Phase 8 | Pending |
+| EXPORT-03 | Phase 8 | Pending |
+| CONFIG-01 | Phase 1 | Pending |
+| CONFIG-02 | Phase 1 | Pending |
+| CONFIG-03 | Phase 1 | Pending |
+| CONFIG-04 | Phase 1 | Pending |
+| CONFIG-05 | Phase 5 | Pending |
+| CONFIG-06 | Phase 5 | Pending |
+| CONFIG-07 | Phase 5 | Pending |
+| CONFIG-08 | Phase 5 | Pending |
+| CONFIG-09 | Phase 5 | Pending |
+| CONFIG-10 | Phase 1 | Pending |
+| ERROR-01 | Phase 1 | Pending |
+| ERROR-02 | Phase 1 | Pending |
+| ERROR-03 | Phase 1 | Pending |
+| ERROR-04 | Phase 1 | Pending |
+| ERROR-05 | Phase 3 | Pending |
+| ERROR-06 | Phase 8 | Pending |
+| ERROR-07 | Phase 1 | Pending |
 
 **Coverage:**
-- v1 requirements: 54 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 54 (pending roadmap)
+- v1 requirements: 58 total
+- Mapped to phases: 58 (100%)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-05*
-*Last updated: 2026-02-05 after initial definition*
+*Last updated: 2026-02-05 after roadmap creation*
