@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 
 ## Current Position
 
-Phase: 2 of 8 (Resume Management)
-Plan: 2 of 2
-Status: Phase complete
-Last activity: 2026-02-06 — Completed 02-02-PLAN.md (Resume management UI)
+Phase: 3 of 8 (Job Fetching & Scheduling)
+Plan: 1 of 3
+Status: In progress
+Last activity: 2026-02-05 — Completed 03-01-PLAN.md (API clients & storage extension)
 
-Progress: [██████░░░░] 66.7%
+Progress: [███████░░░] 70.0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 7 minutes
-- Total execution time: 0.7 hours
+- Total plans completed: 7
+- Average duration: 6 minutes
+- Total execution time: 0.8 hours
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [██████░░░░] 66.7%
 |-------|-------|-------|----------|
 | 01 | 4 | 27min | 7min |
 | 02 | 2 | 14min | 7min |
+| 03 | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (9min), 01-04 (8min), 02-01 (1min), 02-02 (13min)
-- Trend: Steady velocity ~7min/plan for feature work with UI
+- Last 5 plans: 01-04 (8min), 02-01 (1min), 02-02 (13min), 03-01 (2min)
+- Trend: Fast execution for API client work, steady 7min for UI-heavy plans
 
 *Updated after each plan completion*
 
@@ -87,6 +88,14 @@ Recent decisions affecting current work:
 - Relative date display: Show "today/yesterday/N days ago" instead of ISO timestamps for better UX
 - File input reset: Reset after upload allows re-uploading same file if needed
 
+**From 03-01 execution:**
+- Storage schema: SETTINGS formalized with fetchHour, fetchMinute, timezone, searchKeywords, location, salaryMin, datePosted, employmentType, remoteOnly
+- Fetch history: Last 7 entries tracked with date, status, counts, errors; auto-trimmed on each addition
+- Adaptive metrics: Per-source quality tracking with recentWindow arrays
+- Normalized job schema: jobId (source-prefixed), source, title, company, location, salary, description, url, postedAt, fetchedAt, status, score, scoreReasoning
+- API client pattern: Validate keys first, use storage.getSettings() for defaults, wrap fetch in retryWithBackoff
+- JSearch query construction: Combines keywords + location in single string ("software engineer in San Francisco")
+
 ### Pending Todos
 
 None yet.
@@ -107,8 +116,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T03:24:13 UTC
-Stopped at: Completed 02-02-PLAN.md (Resume management UI)
+Last session: 2026-02-05T20:22:19 UTC
+Stopped at: Completed 03-01-PLAN.md (API clients & storage extension)
 Resume file: None
 
-**Phase 2 complete:** Resume management feature fully implemented. Users can upload PDF/DOCX resumes or paste text, with persistence in chrome.storage.local. Next phase: Phase 3 (Job Fetching) or Phase 4 (AI Scoring) per ROADMAP.md wave structure.
+**Phase 3 in progress (1/3 plans complete):** API clients created for Adzuna and JSearch with normalized job schema. Storage extended with settings, fetch history, and adaptive metrics. Next: 03-02 (Job Fetcher Orchestrator) to coordinate API calls and handle daily limits.
