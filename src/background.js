@@ -1,6 +1,8 @@
 import { storage, STORAGE_KEYS } from './storage.js';
 import { ApiError, getUserMessage, createApiError } from './errors.js';
 import { keepAlive } from './keep-alive.js';
+import { scheduleDailyFetch, verifyAlarmExists, getNextFetchTime } from './scheduler.js';
+import { runJobFetch, resumeJobFetch } from './job-fetcher.js';
 
 /**
  * Service worker lifecycle management
@@ -35,13 +37,25 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       jobsFetched: 0
     });
 
+    // Initialize default settings
+    const defaultTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    await storage.set(STORAGE_KEYS.SETTINGS, {
+      fetchHour: 6,
+      fetchMinute: 0,
+      timezone: defaultTimezone,
+      searchKeywords: [],
+      location: '',
+      salaryMin: null,
+      datePosted: 'all',
+      employmentType: 'FULLTIME',
+      remoteOnly: false
+    });
+
     console.log('Default storage initialized');
   }
 
-  // Create daily alarm (fires every 24 hours)
-  chrome.alarms.create('daily-job-fetch', {
-    periodInMinutes: 1440 // 24 hours
-  });
+  // Schedule daily fetch with user's preferred time (defaults to 6:00 AM local)
+  await scheduleDailyFetch();
 
   console.log('Daily job fetch alarm created');
 });
@@ -53,20 +67,24 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 chrome.runtime.onStartup.addListener(async () => {
   console.log('JobDigest service worker started');
 
-  // Check for batch progress recovery
-  const batchProgress = await storage.getBatchProgress();
-  if (batchProgress.inProgress === true) {
-    console.log('Recovering batch progress from previous session', batchProgress);
-    // Actual recovery logic will be added in Phase 3 when batch processing is implemented
+  // Verify daily alarm exists (Chrome may clear alarms on restart)
+  const alarmStatus = await verifyAlarmExists();
+  if (!alarmStatus.exists) {
+    console.log('Daily alarm was recreated');
   }
 
-  // Verify daily alarm exists (Chrome may clear alarms)
-  const alarm = await chrome.alarms.get('daily-job-fetch');
-  if (!alarm) {
-    console.warn('Daily alarm missing, recreating...');
-    chrome.alarms.create('daily-job-fetch', {
-      periodInMinutes: 1440
-    });
+  // Check for in-progress batch recovery
+  const batchProgress = await storage.getBatchProgress();
+  if (batchProgress.inProgress === true) {
+    console.log('Recovering in-progress fetch from stage:', batchProgress.stage || 'unknown');
+    try {
+      const result = await resumeJobFetch();
+      console.log('Fetch recovery complete:', result);
+    } catch (error) {
+      console.error('Fetch recovery failed:', error);
+      // Clear stuck progress to prevent infinite recovery loop
+      await storage.clearBatchProgress();
+    }
   }
 });
 
@@ -74,10 +92,34 @@ chrome.runtime.onStartup.addListener(async () => {
 // Alarms
 // =============================================================================
 
-chrome.alarms.onAlarm.addListener((alarm) => {
+chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name === 'daily-job-fetch') {
     console.log('Daily job fetch alarm fired');
-    // Actual fetch will be wired in Phase 3
+
+    // Smart catch-up: detect missed alarms after device sleep
+    const now = Date.now();
+    const delayMinutes = (now - alarm.scheduledTime) / 1000 / 60;
+
+    if (delayMinutes > 120) {
+      // Missed by more than 2 hours (likely device was asleep)
+      console.warn(`Alarm missed by ${delayMinutes.toFixed(0)} minutes`);
+
+      // Skip if already fetched today
+      const dailyStats = await storage.getDailyStats();
+      if (dailyStats.jobsFetched > 0) {
+        console.log('Already fetched jobs today, skipping catch-up fetch');
+        return;
+      }
+      console.log('No jobs fetched today, proceeding with catch-up fetch');
+    }
+
+    // Run the fetch pipeline
+    try {
+      const result = await runJobFetch({ manual: false });
+      console.log('Daily fetch complete:', result);
+    } catch (error) {
+      console.error('Daily fetch failed:', error);
+    }
   } else if (alarm.name.startsWith('keepalive-')) {
     // Ignore keep-alive pings (handled by keep-alive.js)
   } else {
@@ -117,6 +159,46 @@ async function handleMessage(message, sender) {
     case 'TEST_API_CONNECTION': {
       const { service, credentials } = message;
       return await testApiConnection(service, credentials);
+    }
+
+    case 'TRIGGER_FETCH': {
+      // Manual fetch triggered by user
+      console.log('Manual fetch triggered by user');
+      const result = await runJobFetch({ manual: true });
+      return result;
+    }
+
+    case 'GET_FETCH_STATUS': {
+      // Return current fetch state for UI
+      const batchProgress = await storage.getBatchProgress();
+      const dailyStats = await storage.getDailyStats();
+      const fetchHistory = await storage.getFetchHistory();
+      const nextFetch = await getNextFetchTime();
+
+      return {
+        inProgress: batchProgress.inProgress,
+        currentStage: batchProgress.stage || null,
+        dailyStats: {
+          jobsFetched: dailyStats.jobsFetched,
+          remaining: Math.max(0, 100 - dailyStats.jobsFetched),
+          date: dailyStats.date
+        },
+        nextFetchTime: nextFetch ? nextFetch.toISOString() : null,
+        recentHistory: fetchHistory.slice(-5) // Last 5 fetch entries
+      };
+    }
+
+    case 'GET_NEXT_FETCH_TIME': {
+      const nextTime = await getNextFetchTime();
+      return { nextFetchTime: nextTime ? nextTime.toISOString() : null };
+    }
+
+    case 'UPDATE_FETCH_SCHEDULE': {
+      // User changed fetch time in settings
+      const { hour, minute } = message;
+      await scheduleDailyFetch(hour, minute);
+      const nextTime = await getNextFetchTime();
+      return { success: true, nextFetchTime: nextTime ? nextTime.toISOString() : null };
     }
 
     default:
