@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 ## Current Position
 
 Phase: 4 of 8 (AI Scoring)
-Plan: 1 of 3
+Plan: 2 of 3
 Status: In progress
-Last activity: 2026-02-06 — Completed 04-01-PLAN.md (Claude scoring engine)
+Last activity: 2026-02-06 — Completed 04-02-PLAN.md (Scoring pipeline integration)
 
-Progress: [████████████░░] 73.3%
+Progress: [████████████░░] 80.0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
-- Average duration: 9 minutes
-- Total execution time: 1.5 hours
+- Total plans completed: 12
+- Average duration: 8 minutes
+- Total execution time: 1.6 hours
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: [████████████░░] 73.3%
 | 01 | 4 | 27min | 7min |
 | 02 | 2 | 14min | 7min |
 | 03 | 4 | 90min | 23min |
-| 04 | 1 | 2min | 2min |
+| 04 | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (2min), 03-03 (1min), 03-04 (85min), 04-01 (2min)
-- Trend: Phase 4 started. Plan 04-01 executed cleanly with no deviations
+- Last 5 plans: 03-03 (1min), 03-04 (85min), 04-01 (2min), 04-02 (2min)
+- Trend: Phase 4 progressing quickly. Both plans executed cleanly with no deviations
 
 *Updated after each plan completion*
 
@@ -132,6 +132,13 @@ Recent decisions affecting current work:
 - Prompt caching: Two system blocks with cache_control ephemeral (instructions + resume) for 90% cost reduction
 - Checkpoint resilience: Save after each job scored for service worker restart recovery
 
+**From 04-02 execution:**
+- Scoring integration: Appended scoring stage after fetch pipeline completes (not inserted into checkpoint switch)
+- Error isolation: Scoring failure does NOT crash fetch pipeline (try/catch with no re-throw, errors logged to historyEntry.errors)
+- scoringResult forwarding: Added to all fetch return objects (runJobFetch, resumeJobFetch) for UI consumption
+- Keep-alive separation: Manual scoring uses 'ai-scoring' tag, distinct from 'job-fetch' tag used by fetch pipeline
+- Message handlers: SCORE_JOBS (manual scoring with keep-alive) and GET_SCORING_STATUS (lightweight storage query for UI stats)
+
 ### Pending Todos
 
 None yet.
@@ -153,8 +160,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T07:19:47 UTC
-Stopped at: Completed 04-01-PLAN.md (Claude scoring engine)
+Last session: 2026-02-06T07:24:48 UTC
+Stopped at: Completed 04-02-PLAN.md (Scoring pipeline integration)
 Resume file: None
 
-**Phase 4 in progress (1/3 plans):** AI scoring engine created with Claude API wrapper (structured outputs, prompt caching) and job scorer orchestrator (sequential processing, checkpoint resilience). Skills-heavy weighting (60%) implemented per user decision. extractJobCore strips benefits/perks/culture sections to reduce token costs. Ready for integration into fetch pipeline (Plan 04-02).
+**Phase 4 in progress (2/3 plans):** AI scoring integrated into fetch pipeline. Scoring runs automatically after jobs are fetched. Scoring failures isolated (don't crash fetch pipeline). Manual scoring available via SCORE_JOBS message handler. GET_SCORING_STATUS provides UI statistics. Jobs in storage now have score, scoreReasoning, scoredAt, scoreDetails fields. Ready for dashboard display (Plan 04-03).
