@@ -63,9 +63,26 @@
     </div>
   </div>
 
-  <!-- Job detail modal (populated by Plan 02) -->
+  <!-- Job detail modal -->
   <dialog id="job-detail-modal" class="job-modal">
-    <!-- Populated by Plan 02 -->
+    <div class="modal-header">
+      <div class="modal-nav-info">
+        <span id="modal-counter" class="modal-counter">1 of 10</span>
+      </div>
+      <form method="dialog">
+        <button class="modal-close-btn" aria-label="Close" autofocus>&times;</button>
+      </form>
+    </div>
+
+    <div class="modal-body" id="modal-body">
+      <!-- Dynamically populated -->
+    </div>
+
+    <div class="modal-footer">
+      <button id="prev-job" class="btn-modal-nav" aria-label="Previous job" disabled>&larr; Previous</button>
+      <a id="modal-view-original" href="#" target="_blank" rel="noopener noreferrer" class="btn-modal-action">View Original</a>
+      <button id="next-job" class="btn-modal-nav" aria-label="Next job" disabled>Next &rarr;</button>
+    </div>
   </dialog>
 
   <!-- Settings panel (hidden by default) -->

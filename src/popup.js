@@ -1,5 +1,6 @@
 import { initSettings } from './settings.js';
 import { initDashboardControls, renderJobGrid } from './dashboard/filters.js';
+import { initJobModal, openJobModal } from './dashboard/job-modal.js';
 
 // DOM elements
 let settingsBtn, closeSettingsBtn, settingsPanel, mainView;
@@ -36,6 +37,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize dashboard
   initDashboardControls();
   await renderJobGrid();
+
+  // Initialize modal
+  initJobModal();
+
+  // Listen for job modal open events from cards
+  document.getElementById('job-grid').addEventListener('open-job-modal', (e) => {
+    openJobModal(e.detail.jobId);
+  });
 
   // Add empty state action button handler
   const emptyStateBtn = document.getElementById('empty-state-action');

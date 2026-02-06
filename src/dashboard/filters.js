@@ -128,22 +128,24 @@ export async function renderJobGrid() {
   jobs.forEach(job => {
     const card = createJobCard(job);
 
-    // Add click handler to open modal (Plan 02 will implement openJobModal)
+    // Add click handler to open modal
     card.addEventListener('click', (e) => {
       // Don't open modal if clicking on buttons/links/select
       if (e.target.closest('.status-dropdown, .btn-view-original, .btn-view-details')) {
         return;
       }
-      // Modal opening will be implemented in Plan 02
-      console.log('Card clicked:', job.jobId);
+      // Dispatch custom event to trigger modal
+      const event = new CustomEvent('open-job-modal', { detail: { jobId: job.jobId } });
+      grid.dispatchEvent(event);
     });
 
     // Add keyboard handler
     card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        // Modal opening will be implemented in Plan 02
-        console.log('Card activated via keyboard:', job.jobId);
+        // Dispatch custom event to trigger modal
+        const event = new CustomEvent('open-job-modal', { detail: { jobId: job.jobId } });
+        grid.dispatchEvent(event);
       }
     });
 

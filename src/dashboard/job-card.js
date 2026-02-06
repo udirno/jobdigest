@@ -31,15 +31,14 @@ export function createJobCard(job) {
     : job.score;
 
   // Format salary
-  const salaryText = job.salary?.min
-    ? `$${Math.round(job.salary.min / 1000)}k${job.salary.max ? `-$${Math.round(job.salary.max / 1000)}k` : '+'}`
-    : '';
+  const salaryText = formatSalary(job.salary);
 
   // Build card HTML
   card.innerHTML = `
     <div class="card-header">
-      <div class="score-badge ${scoreClass}" tabindex="0">
+      <div class="score-badge ${scoreClass}" tabindex="0" aria-describedby="tooltip-${job.jobId}">
         ${scoreDisplay}
+        <span class="score-tooltip" role="tooltip" id="tooltip-${job.jobId}">Score based on skills, experience, tech stack, title, and industry fit</span>
       </div>
       <select class="status-dropdown" data-job-id="${job.jobId}" aria-label="Job status">
         <option value="new" ${job.status === 'new' ? 'selected' : ''}>New</option>
@@ -101,11 +100,23 @@ export function createJobCard(job) {
  * @param {string} text - Text to escape
  * @returns {string} Escaped HTML
  */
-function escapeHtml(text) {
+export function escapeHtml(text) {
   if (!text) return '';
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
+}
+
+/**
+ * Format salary object to display string
+ * @param {Object} salary - Salary object with min/max
+ * @returns {string} Formatted salary string
+ */
+export function formatSalary(salary) {
+  if (!salary || !salary.min) return '';
+  const minK = Math.round(salary.min / 1000);
+  const maxK = salary.max ? Math.round(salary.max / 1000) : null;
+  return maxK ? `$${minK}k-$${maxK}k` : `$${minK}k+`;
 }
 
 /**
