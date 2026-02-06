@@ -93,7 +93,7 @@ Plans:
 ### Phase 5: Dashboard & UI
 **Goal**: Users view scored jobs in card-based dashboard with filtering, sorting, and detail views
 **Depends on**: Phase 4 (scored jobs available)
-**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, CONFIG-05, CONFIG-06, CONFIG-07, CONFIG-08, CONFIG-09
+**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, CONFIG-09
 **Success Criteria** (what must be TRUE):
   1. Dashboard displays jobs as cards with black background and sand brown accents
   2. Jobs sort by score (highest to lowest) by default
@@ -101,11 +101,12 @@ Plans:
   4. User can click "View Original" to open job posting URL in new tab
   5. User can filter jobs by application status (New, Contacted, Applied, Passed)
   6. Each job card prominently shows score, job title, company name, and location
-  7. User can configure search preferences (keywords, location, salary, date posted, industry) in settings
-**Plans**: TBD
+  7. User can clear jobs, clear scores, and reset settings via data management
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: TBD during planning
+- [ ] 05-01-PLAN.md — Dashboard card grid with responsive layout, filtering, sorting, status management, empty states
+- [ ] 05-02-PLAN.md — Detail modal with score breakdown, Previous/Next navigation, tooltips, data management settings
 
 ### Phase 6: Application Tracking
 **Goal**: Users manage job application pipeline with status tracking, notes, dates, and dismiss functionality
@@ -162,11 +163,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 2. Resume Management | 2/2 | Complete | 2026-02-05 |
 | 3. Job Fetching & Scheduling | 4/4 | Complete | 2026-02-05 |
 | 4. AI Scoring | 2/2 | Complete | 2026-02-05 |
-| 5. Dashboard & UI | 0/TBD | Not started | - |
+| 5. Dashboard & UI | 0/2 | Planning complete | - |
 | 6. Application Tracking | 0/TBD | Not started | - |
 | 7. AI Content Generation | 0/TBD | Not started | - |
 | 8. Export & Polish | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-05* (Phase 4 executed)
+*Last updated: 2026-02-06* (Phase 5 planned)
