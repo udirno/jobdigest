@@ -64,7 +64,8 @@ export async function runJobFetch(options = {}) {
       status: 'success',
       jobsFetched: historyEntry.jobsFetched,
       adzunaCount: historyEntry.adzunaCount,
-      jsearchCount: historyEntry.jsearchCount
+      jsearchCount: historyEntry.jsearchCount,
+      errors: historyEntry.errors || []
     };
   } catch (error) {
     console.error('Job fetch failed:', error);
@@ -79,7 +80,8 @@ export async function runJobFetch(options = {}) {
     return {
       status: 'failed',
       error: error.message,
-      jobsFetched: historyEntry.jobsFetched
+      jobsFetched: historyEntry.jobsFetched,
+      errors: historyEntry.errors || []
     };
   }
 }
@@ -132,7 +134,8 @@ export async function resumeJobFetch() {
       status: 'success',
       jobsFetched: historyEntry.jobsFetched,
       adzunaCount: historyEntry.adzunaCount,
-      jsearchCount: historyEntry.jsearchCount
+      jsearchCount: historyEntry.jsearchCount,
+      errors: historyEntry.errors || []
     };
   } catch (error) {
     console.error('Resumed job fetch failed:', error);
@@ -146,7 +149,8 @@ export async function resumeJobFetch() {
     return {
       status: 'failed',
       error: error.message,
-      jobsFetched: historyEntry.jobsFetched
+      jobsFetched: historyEntry.jobsFetched,
+      errors: historyEntry.errors || []
     };
   }
 }
