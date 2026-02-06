@@ -19,10 +19,54 @@
 
   <!-- Main view -->
   <div id="main-view" class="main-view">
-    <div class="empty-state">
-      <p>No jobs yet. Jobs will appear here after your first fetch.</p>
+    <!-- Dashboard toolbar -->
+    <div id="dashboard-toolbar" class="dashboard-toolbar">
+      <div class="toolbar-left">
+        <span id="job-count" class="job-count">0 jobs</span>
+      </div>
+      <div class="toolbar-right">
+        <div class="control-group">
+          <label for="filter-status" class="sr-only">Filter by status</label>
+          <select id="filter-status" class="toolbar-select">
+            <option value="all">All Jobs</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="applied">Applied</option>
+            <option value="passed">Passed</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="sort-by" class="sr-only">Sort by</label>
+          <select id="sort-by" class="toolbar-select">
+            <option value="score">Score</option>
+            <option value="date">Date Posted</option>
+            <option value="company">Company</option>
+            <option value="title">Title</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job card grid -->
+    <div id="job-grid" class="job-grid"></div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="empty-state" style="display: none;">
+      <div class="empty-state-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2 class="empty-state-title">No jobs yet</h2>
+      <p class="empty-state-description">Jobs will appear here after your first fetch. Try triggering a manual fetch or check your search settings.</p>
+      <button id="empty-state-action" class="btn-primary">Open Settings</button>
     </div>
   </div>
+
+  <!-- Job detail modal (populated by Plan 02) -->
+  <dialog id="job-detail-modal" class="job-modal">
+    <!-- Populated by Plan 02 -->
+  </dialog>
 
   <!-- Settings panel (hidden by default) -->
   <div id="settings-panel" class="settings-panel hidden">

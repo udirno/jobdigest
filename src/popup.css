@@ -18,8 +18,8 @@
 }
 
 body {
-  width: 400px;
-  min-height: 500px;
+  width: 780px;
+  min-height: 580px;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -63,22 +63,41 @@ body {
 
 /* Main view */
 .main-view {
-  padding: 16px;
-  min-height: 450px;
+  padding: 0;
+  min-height: 530px;
+  max-height: 530px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .empty-state {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  padding: 40px 20px;
+  padding: 60px 32px;
   text-align: center;
+  min-height: 400px;
 }
 
-.empty-state p {
+.empty-state-icon {
+  margin-bottom: 16px;
   color: var(--text-secondary);
-  font-size: 14px;
+}
+
+.empty-state-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.empty-state-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 280px;
+  margin: 0 0 16px;
+  line-height: 1.5;
 }
 
 /* Settings panel */
@@ -515,4 +534,252 @@ body {
 
 .fetch-history {
   margin-top: 8px;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Dashboard toolbar */
+.dashboard-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--bg-secondary);
+  position: sticky;
+  top: 0;
+  background: var(--bg-primary);
+  z-index: 10;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.job-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.toolbar-select {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toolbar-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Job grid */
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+/* Job card */
+.job-card {
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid transparent;
+}
+
+.job-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: #3a3a3a;
+}
+
+.job-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Score badge */
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* High score (80-100): green tones */
+.score-badge.high {
+  background: rgba(46, 125, 50, 0.2);
+  color: #81c784;
+}
+
+/* Medium score (60-79): amber/yellow tones */
+.score-badge.medium {
+  background: rgba(251, 192, 45, 0.15);
+  color: #ffd54f;
+}
+
+/* Low score (0-59): red tones */
+.score-badge.low {
+  background: rgba(211, 47, 47, 0.2);
+  color: #e57373;
+}
+
+/* Unscored: neutral */
+.score-badge.unscored {
+  background: rgba(150, 150, 150, 0.15);
+  color: var(--text-secondary);
+}
+
+/* Status dropdown */
+.status-dropdown {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid #3a3a3a;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.status-dropdown:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Card body */
+.job-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.job-company {
+  font-size: 13px;
+  color: var(--accent);
+  margin: 0;
+}
+
+.job-location {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.job-meta {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.job-description-preview {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* Card footer */
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-card-action {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 3px 6px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.btn-card-action:hover {
+  color: var(--accent);
+  background: rgba(201, 169, 110, 0.1);
+}
+
+.btn-view-original {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: color 0.15s;
+}
+
+.btn-view-original:hover {
+  color: var(--accent);
+}
+
+/* Dialog modal shell */
+.job-modal {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 0;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+}
+
+.job-modal::backdrop {
+  background: rgba(0, 0, 0, 0.7);
 }
