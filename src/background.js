@@ -165,7 +165,11 @@ async function handleMessage(message, sender) {
       // Manual fetch triggered by user
       console.log('Manual fetch triggered by user');
       const result = await runJobFetch({ manual: true });
-      return result;
+      // Include errors from the result for better UI feedback
+      return {
+        ...result,
+        errors: result.errors || []
+      };
     }
 
     case 'GET_FETCH_STATUS': {

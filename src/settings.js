@@ -670,6 +670,16 @@ async function handleFetchNow() {
       if (response.cap_reached) {
         showError(statusEl, 'Daily cap reached (100 jobs). Try again tomorrow.');
       } else {
+        // Check if fetch succeeded but got 0 jobs due to configuration errors
+        if (response.jobsFetched === 0 && response.errors && response.errors.length > 0) {
+          const hasConfigError = response.errors.some(err =>
+            err.includes('not configured') || err.includes('API key')
+          );
+          if (hasConfigError) {
+            showError(statusEl, 'API keys not configured. Please add your Adzuna and JSearch API keys in Settings.');
+            return;
+          }
+        }
         const totalJobs = response.adzunaCount + response.jsearchCount;
         showSuccess(statusEl, `Fetched ${totalJobs} jobs (Adzuna: ${response.adzunaCount}, JSearch: ${response.jsearchCount})`);
       }
