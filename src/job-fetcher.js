@@ -3,6 +3,7 @@ import { keepAlive } from './keep-alive.js';
 import { fetchAdzunaJobs } from './api/adzuna.js';
 import { fetchJSearchJobs } from './api/jsearch.js';
 import { calculateAdaptiveAllocation, updateAdaptiveMetrics } from './adaptive-distribution.js';
+import { scoreUnscoredJobs } from './job-scorer.js';
 
 /**
  * Main entry point for complete fetch cycle
@@ -65,7 +66,8 @@ export async function runJobFetch(options = {}) {
       jobsFetched: historyEntry.jobsFetched,
       adzunaCount: historyEntry.adzunaCount,
       jsearchCount: historyEntry.jsearchCount,
-      errors: historyEntry.errors || []
+      errors: historyEntry.errors || [],
+      scoringResult: historyEntry.scoringResult || null
     };
   } catch (error) {
     console.error('Job fetch failed:', error);
@@ -81,7 +83,8 @@ export async function runJobFetch(options = {}) {
       status: 'failed',
       error: error.message,
       jobsFetched: historyEntry.jobsFetched,
-      errors: historyEntry.errors || []
+      errors: historyEntry.errors || [],
+      scoringResult: historyEntry.scoringResult || null
     };
   }
 }
@@ -135,7 +138,8 @@ export async function resumeJobFetch() {
       jobsFetched: historyEntry.jobsFetched,
       adzunaCount: historyEntry.adzunaCount,
       jsearchCount: historyEntry.jsearchCount,
-      errors: historyEntry.errors || []
+      errors: historyEntry.errors || [],
+      scoringResult: historyEntry.scoringResult || null
     };
   } catch (error) {
     console.error('Resumed job fetch failed:', error);
@@ -150,7 +154,8 @@ export async function resumeJobFetch() {
       status: 'failed',
       error: error.message,
       jobsFetched: historyEntry.jobsFetched,
-      errors: historyEntry.errors || []
+      errors: historyEntry.errors || [],
+      scoringResult: historyEntry.scoringResult || null
     };
   }
 }
@@ -334,4 +339,20 @@ async function executeFetchPipeline(maxJobs, historyEntry, startStage = 'bootstr
 
   // Update adaptive metrics
   await updateAdaptiveMetrics(adzunaJobs, jsearchJobs);
+
+  // Score newly fetched jobs
+  console.log('Starting AI scoring for fetched jobs...');
+  try {
+    const scoreResult = await scoreUnscoredJobs();
+    console.log(`Scoring complete: ${scoreResult.scored} scored, ${scoreResult.failed} failed`);
+    historyEntry.scoringResult = {
+      scored: scoreResult.scored,
+      failed: scoreResult.failed,
+      status: scoreResult.status
+    };
+  } catch (error) {
+    console.error('Scoring stage failed:', error);
+    historyEntry.errors.push(`Scoring: ${error.message}`);
+    // Do NOT rethrow -- fetch was successful even if scoring fails
+  }
 }
