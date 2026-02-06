@@ -1,4 +1,5 @@
 import { storage } from './storage.js';
+import { processResumeFile } from './resume-parser.js';
 
 /**
  * Initialize settings panel
@@ -10,6 +11,34 @@ export async function initSettings(container) {
 
   // Render settings form
   container.innerHTML = `
+    <!-- Resume Section -->
+    <div class="settings-section resume-section">
+      <h3 class="section-title">Resume</h3>
+      <p class="section-description">Upload your resume for AI job matching.</p>
+
+      <!-- Current resume status -->
+      <div class="resume-status" id="resume-status">
+        <span class="status-text">Loading...</span>
+      </div>
+
+      <!-- File upload area -->
+      <div class="upload-area">
+        <input type="file" id="resume-upload" accept=".pdf,.docx" class="file-input">
+        <label for="resume-upload" class="btn-upload">Upload PDF or DOCX</label>
+        <span class="upload-hint">PDF or DOCX, max 5MB</span>
+      </div>
+
+      <!-- Text paste area -->
+      <div class="text-paste-area">
+        <div class="divider-text">Or paste resume text:</div>
+        <textarea id="resume-text" class="resume-textarea" rows="6" placeholder="Paste your resume content here..."></textarea>
+        <button id="save-resume-text" class="btn-primary btn-sm">Save Text</button>
+      </div>
+
+      <!-- Processing/status feedback -->
+      <div class="status-indicator" id="resume-feedback"></div>
+    </div>
+
     <div class="settings-section">
       <h3 class="section-title">API Keys</h3>
       <p class="section-description">Manage your API credentials for job fetching and AI scoring.</p>
@@ -77,6 +106,9 @@ export async function initSettings(container) {
 
   // Attach event listeners
   attachEventListeners(container);
+
+  // Load resume status
+  await loadResumeStatus();
 }
 
 /**
@@ -107,6 +139,18 @@ export async function loadApiKeys() {
  * @param {HTMLElement} container - Container element
  */
 function attachEventListeners(container) {
+  // Resume file upload handler
+  const fileInput = container.querySelector('#resume-upload');
+  if (fileInput) {
+    fileInput.addEventListener('change', handleFileUpload);
+  }
+
+  // Resume text paste handler
+  const saveTextBtn = container.querySelector('#save-resume-text');
+  if (saveTextBtn) {
+    saveTextBtn.addEventListener('click', handleSaveResumeText);
+  }
+
   // Toggle visibility buttons
   container.querySelectorAll('.toggle-visibility').forEach(btn => {
     btn.addEventListener('click', handleToggleVisibility);
@@ -284,4 +328,157 @@ function showSuccess(el, message) {
 function showError(el, message) {
   el.classList.add('error');
   el.textContent = message;
+}
+
+/**
+ * Load and display resume status
+ */
+async function loadResumeStatus() {
+  const statusEl = document.getElementById('resume-status');
+  if (!statusEl) return;
+
+  const resume = await storage.getResume();
+
+  if (resume && resume.text) {
+    // Calculate relative date
+    const uploadedDate = new Date(resume.uploadedAt);
+    const now = new Date();
+    const daysDiff = Math.floor((now - uploadedDate) / (1000 * 60 * 60 * 24));
+
+    let relativeDate;
+    if (daysDiff === 0) {
+      relativeDate = 'today';
+    } else if (daysDiff === 1) {
+      relativeDate = 'yesterday';
+    } else {
+      relativeDate = `${daysDiff} days ago`;
+    }
+
+    statusEl.innerHTML = `
+      <span class="status-text">Current: <span class="file-name">${resume.fileName}</span> (uploaded ${relativeDate})</span>
+      <button id="remove-resume-btn" class="btn-remove">Remove</button>
+    `;
+
+    // Attach remove button listener
+    const removeBtn = document.getElementById('remove-resume-btn');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', handleRemoveResume);
+    }
+  } else {
+    statusEl.innerHTML = '<span class="status-text">No resume uploaded</span>';
+  }
+}
+
+/**
+ * Handle file upload
+ */
+async function handleFileUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const feedbackEl = document.getElementById('resume-feedback');
+  feedbackEl.className = 'status-indicator loading';
+  feedbackEl.textContent = `Processing ${file.name}...`;
+
+  try {
+    // Process file using resume-parser
+    const result = await processResumeFile(file);
+
+    // Save to storage
+    await storage.setResume(result);
+
+    // Update status display
+    await loadResumeStatus();
+
+    // Show success message
+    feedbackEl.className = 'status-indicator success';
+    feedbackEl.textContent = `Resume uploaded: ${result.fileName} (${result.text.length} characters)`;
+
+    // Clear success message after 3 seconds
+    setTimeout(() => {
+      feedbackEl.className = 'status-indicator';
+      feedbackEl.textContent = '';
+    }, 3000);
+  } catch (error) {
+    console.error('Resume upload error:', error);
+    feedbackEl.className = 'status-indicator error';
+    feedbackEl.textContent = error.message || 'Failed to process resume';
+  }
+
+  // Reset file input
+  e.target.value = '';
+}
+
+/**
+ * Handle save resume text
+ */
+async function handleSaveResumeText() {
+  const textarea = document.getElementById('resume-text');
+  const text = textarea.value.trim();
+  const feedbackEl = document.getElementById('resume-feedback');
+
+  // Validate minimum length
+  if (text.length < 50) {
+    feedbackEl.className = 'status-indicator error';
+    feedbackEl.textContent = 'Resume text too short. Please provide at least 50 characters.';
+    return;
+  }
+
+  feedbackEl.className = 'status-indicator loading';
+  feedbackEl.textContent = 'Saving...';
+
+  try {
+    // Save to storage
+    const resume = {
+      text,
+      fileName: 'pasted-text.txt',
+      uploadedAt: new Date().toISOString()
+    };
+    await storage.setResume(resume);
+
+    // Update status display
+    await loadResumeStatus();
+
+    // Show success message
+    feedbackEl.className = 'status-indicator success';
+    feedbackEl.textContent = `Resume text saved (${text.length} characters)`;
+
+    // Clear textarea
+    textarea.value = '';
+
+    // Clear success message after 3 seconds
+    setTimeout(() => {
+      feedbackEl.className = 'status-indicator';
+      feedbackEl.textContent = '';
+    }, 3000);
+  } catch (error) {
+    console.error('Save text error:', error);
+    feedbackEl.className = 'status-indicator error';
+    feedbackEl.textContent = 'Failed to save resume text';
+  }
+}
+
+/**
+ * Handle remove resume
+ */
+async function handleRemoveResume() {
+  const feedbackEl = document.getElementById('resume-feedback');
+
+  try {
+    await storage.clearResume();
+    await loadResumeStatus();
+
+    feedbackEl.className = 'status-indicator success';
+    feedbackEl.textContent = 'Resume removed';
+
+    // Clear message after 3 seconds
+    setTimeout(() => {
+      feedbackEl.className = 'status-indicator';
+      feedbackEl.textContent = '';
+    }, 3000);
+  } catch (error) {
+    console.error('Remove resume error:', error);
+    feedbackEl.className = 'status-indicator error';
+    feedbackEl.textContent = 'Failed to remove resume';
+  }
 }
