@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Eliminate 2+ hours per day of manual job browsing by auto-fetching, AI-scoring, and tracking jobs with intelligent filtering that surfaces only high-quality matches.
-**Current focus:** Phase 3 - Job Fetching & Scheduling (next up)
+**Current focus:** Phase 4 - AI Scoring (in progress)
 
 ## Current Position
 
-Phase: 3 of 8 (Job Fetching & Scheduling)
-Plan: 4 of 4
-Status: Phase complete
-Last activity: 2026-02-05 — Completed 03-04-PLAN.md (Settings UI controls)
+Phase: 4 of 8 (AI Scoring)
+Plan: 1 of 3
+Status: In progress
+Last activity: 2026-02-06 — Completed 04-01-PLAN.md (Claude scoring engine)
 
-Progress: [██████████] 100.0%
+Progress: [████████████░░] 73.3%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 9 minutes
 - Total execution time: 1.5 hours
 
@@ -30,10 +30,11 @@ Progress: [██████████] 100.0%
 | 01 | 4 | 27min | 7min |
 | 02 | 2 | 14min | 7min |
 | 03 | 4 | 90min | 23min |
+| 04 | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (2min), 03-02 (2min), 03-03 (1min), 03-04 (85min)
-- Trend: Phase 3 complete. Plan 03-04 required extensive error handling iteration for UI-backend integration
+- Last 5 plans: 03-02 (2min), 03-03 (1min), 03-04 (85min), 04-01 (2min)
+- Trend: Phase 4 started. Plan 04-01 executed cleanly with no deviations
 
 *Updated after each plan completion*
 
@@ -121,6 +122,16 @@ Recent decisions affecting current work:
 - Response structure alignment: handleFetchNow checks `!response.success || response.error` to match job-fetcher actual response format
 - Error message pass-through: Background handlers return `{ success: false, error: error.message }` for specific UI feedback
 
+**From 04-01 execution:**
+- Model selection: Haiku 4.5 chosen for scoring ($1 input / $5 output per MTok) as cost-quality balance
+- Scoring weighting: Skills-heavy approach (60% skills/tech stack, 15% experience, 10% title, 10% industry, 5% other)
+- Job content extraction: extractJobCore strips benefits/perks/culture sections to reduce token costs, keeps requirements/responsibilities/skills
+- Rate limiting: Sequential scoring with 500ms delay (conservative for Tier 1: 50 RPM limit)
+- Error handling: Failed scoring returns null score object (not throw), job marked with score = -1 sentinel
+- Structured outputs: output_config with json_schema guarantees valid JSON, eliminates parsing errors
+- Prompt caching: Two system blocks with cache_control ephemeral (instructions + resume) for 90% cost reduction
+- Checkpoint resilience: Save after each job scored for service worker restart recovery
+
 ### Pending Todos
 
 None yet.
@@ -132,8 +143,8 @@ None yet.
 - ~~mammoth.js must be loaded via script tag in popup.html before use~~ RESOLVED: Script tag added in 02-02, window.mammoth now available
 
 **Phase 4 - AI Scoring:**
-- Claude prompt engineering for 0-100 scoring quality vs token cost balance needs experimentation
-- API rate limit quotas in production usage patterns unknown (theoretical calculations only)
+- ~~Claude prompt engineering for 0-100 scoring quality vs token cost balance needs experimentation~~ RESOLVED: Skills-heavy weighting (60%) implemented with Haiku 4.5, structured outputs eliminate variability
+- API rate limit quotas in production usage patterns unknown (theoretical calculations only) - monitoring usage logs will inform real-world patterns
 
 **Phase 3 - Job Fetching (COMPLETE):**
 - ~~chrome.alarms reliability issues when device sleeps (best-effort, not guaranteed)~~ RESOLVED: Smart catch-up logic added (skips duplicate fetch if alarm >2hr late AND already fetched today)
@@ -142,8 +153,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T06:09:14 UTC
-Stopped at: Completed 03-04-PLAN.md (Settings UI controls)
+Last session: 2026-02-06T07:19:47 UTC
+Stopped at: Completed 04-01-PLAN.md (Claude scoring engine)
 Resume file: None
 
-**Phase 3 complete (4/4 plans):** Job fetching and scheduling system fully operational with complete user-facing controls. Daily alarm triggers fetch pipeline automatically at user-configured time. Settings panel provides time picker, search preferences form (keywords, location, salary, filters), manual "Fetch Jobs Now" button, and real-time status display (next fetch, daily cap, history). Smart catch-up handles device sleep. Service worker recovers in-progress fetches. Error handling distinguishes missing keys, invalid keys, and API failures with clear user messages. Ready for Phase 4 (AI Scoring).
+**Phase 4 in progress (1/3 plans):** AI scoring engine created with Claude API wrapper (structured outputs, prompt caching) and job scorer orchestrator (sequential processing, checkpoint resilience). Skills-heavy weighting (60%) implemented per user decision. extractJobCore strips benefits/perks/culture sections to reduce token costs. Ready for integration into fetch pipeline (Plan 04-02).
