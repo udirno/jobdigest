@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 ## Current Position
 
 Phase: 3 of 8 (Job Fetching & Scheduling)
-Plan: 1 of 3
+Plan: 2 of 3
 Status: In progress
-Last activity: 2026-02-05 — Completed 03-01-PLAN.md (API clients & storage extension)
+Last activity: 2026-02-05 — Completed 03-02-PLAN.md (Job fetcher orchestrator)
 
-Progress: [███████░░░] 70.0%
+Progress: [████████░░] 80.0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 6 minutes
-- Total execution time: 0.8 hours
+- Total plans completed: 8
+- Average duration: 5 minutes
+- Total execution time: 0.9 hours
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [███████░░░] 70.0%
 |-------|-------|-------|----------|
 | 01 | 4 | 27min | 7min |
 | 02 | 2 | 14min | 7min |
-| 03 | 1 | 2min | 2min |
+| 03 | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 01-04 (8min), 02-01 (1min), 02-02 (13min), 03-01 (2min)
-- Trend: Fast execution for API client work, steady 7min for UI-heavy plans
+- Last 5 plans: 02-01 (1min), 02-02 (13min), 03-01 (2min), 03-02 (2min)
+- Trend: Phase 3 maintaining 2min velocity, fast execution for backend modules
 
 *Updated after each plan completion*
 
@@ -96,6 +96,16 @@ Recent decisions affecting current work:
 - API client pattern: Validate keys first, use storage.getSettings() for defaults, wrap fetch in retryWithBackoff
 - JSearch query construction: Combines keywords + location in single string ("software engineer in San Francisco")
 
+**From 03-02 execution:**
+- Scheduler: chrome.alarms with when + periodInMinutes: 1440 for timezone-aware daily scheduling
+- Alarm resilience: verifyAlarmExists recreates missing alarms automatically (handles Chrome persistence issues)
+- Adaptive allocation: Hybrid quality metric (70% avgScore + 30% high-value percentage) with 25/25 default when no scores
+- Minimum allocation: 10 jobs per API enforced to never starve a source completely
+- Checkpoint recovery: 4-stage fall-through switch (bootstrap-adzuna → bootstrap-jsearch → adaptive-allocation → remaining-fetch)
+- Job persistence: Immediate save after each API call (not batched at end) for checkpoint resilience
+- Error isolation: Individual try/catch per API preserves partial results if one source fails
+- Daily cap handling: Bootstrap counts adjusted if remaining < 50, daily stats incremented after pipeline completes
+
 ### Pending Todos
 
 None yet.
@@ -116,8 +126,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-05T20:22:19 UTC
-Stopped at: Completed 03-01-PLAN.md (API clients & storage extension)
+Last session: 2026-02-05T20:29:52 UTC
+Stopped at: Completed 03-02-PLAN.md (Job fetcher orchestrator)
 Resume file: None
 
-**Phase 3 in progress (1/3 plans complete):** API clients created for Adzuna and JSearch with normalized job schema. Storage extended with settings, fetch history, and adaptive metrics. Next: 03-02 (Job Fetcher Orchestrator) to coordinate API calls and handle daily limits.
+**Phase 3 in progress (2/3 plans complete):** API clients ready, fetch orchestrator built with 4-stage checkpoint recovery and adaptive allocation. Scheduler creates timezone-aware daily alarms. Next: 03-03 (Background Integration) to wire scheduler and job-fetcher into background.js for automated daily fetching.
