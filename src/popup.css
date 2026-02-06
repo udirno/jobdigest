@@ -1,0 +1,32 @@
+/* Reset and base styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Design system CSS variables */
+:root {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2a2a2a;
+  --accent: #c9a96e;
+  --accent-hover: #d4b87a;
+  --text-primary: #e8e8e8;
+  --text-secondary: #999;
+  --error: #e74c3c;
+  --success: #27ae60;
+}
+
+body {
+  width: 400px;
+  min-height: 500px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+#app {
+  padding: 16px;
+}
