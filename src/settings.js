@@ -688,7 +688,10 @@ async function handleFetchNow() {
   } catch (error) {
     console.error('Fetch now error:', error);
     statusEl.classList.remove('loading');
-    showError(statusEl, error.message || 'Failed to trigger fetch');
+    const message = error.message?.includes('not configured') || error.message?.includes('API key')
+      ? 'API keys not configured. Please add your Adzuna and JSearch API keys in Settings.'
+      : error.message || 'Failed to trigger fetch';
+    showError(statusEl, message);
   } finally {
     // Re-enable button
     btn.disabled = false;
