@@ -50,10 +50,11 @@ Plans:
   2. User can upload DOCX resume and extension extracts text successfully
   3. User can paste plain text resume directly
   4. Resume text persists in chrome.storage.local and loads on extension restart
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD during planning
+- [ ] 02-01-PLAN.md — Vendor PDF.js and mammoth.js libraries, create resume parser module, extend storage helpers
+- [ ] 02-02-PLAN.md — Resume management UI in settings panel with file upload, text paste, and human verification
 
 ### Phase 3: Job Fetching & Scheduling
 **Goal**: Extension automatically fetches jobs daily at 6 AM PST from Adzuna and JSearch APIs with manual trigger fallback
@@ -154,7 +155,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 4/4 | Complete | 2026-02-05 |
-| 2. Resume Management | 0/TBD | Not started | - |
+| 2. Resume Management | 0/2 | Not started | - |
 | 3. Job Fetching & Scheduling | 0/TBD | Not started | - |
 | 4. AI Scoring | 0/TBD | Not started | - |
 | 5. Dashboard & UI | 0/TBD | Not started | - |
@@ -164,4 +165,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-05* (Phase 1 complete)
+*Last updated: 2026-02-05* (Phase 2 planned)
