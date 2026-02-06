@@ -84,10 +84,11 @@ Plans:
   2. Each score includes text reasoning explaining match quality (skills, experience, keywords, title, industry)
   3. Scoring evaluates all five dimensions: skills match, experience level, tech stack alignment, job title relevance, industry fit
   4. Scored jobs persist in storage with scores visible to user
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD during planning
+- [ ] 04-01-PLAN.md — Claude API client with structured outputs and prompt caching, job scorer orchestrator
+- [ ] 04-02-PLAN.md — Integration into fetch pipeline and background message handlers for scoring
 
 ### Phase 5: Dashboard & UI
 **Goal**: Users view scored jobs in card-based dashboard with filtering, sorting, and detail views
@@ -160,7 +161,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 1. Foundation & Infrastructure | 4/4 | Complete | 2026-02-05 |
 | 2. Resume Management | 2/2 | Complete | 2026-02-05 |
 | 3. Job Fetching & Scheduling | 4/4 | Complete | 2026-02-05 |
-| 4. AI Scoring | 0/TBD | Not started | - |
+| 4. AI Scoring | 0/2 | Not started | - |
 | 5. Dashboard & UI | 0/TBD | Not started | - |
 | 6. Application Tracking | 0/TBD | Not started | - |
 | 7. AI Content Generation | 0/TBD | Not started | - |
@@ -168,4 +169,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-05* (Phase 3 planned)
+*Last updated: 2026-02-05* (Phase 4 planned)
