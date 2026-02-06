@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Infrastructure** - Extension scaffolding, service worker lifecycle, storage patterns
 - [x] **Phase 2: Resume Management** - Upload/parse PDF/DOCX/text, store resume for AI features
-- [ ] **Phase 3: Job Fetching & Scheduling** - Adzuna/JSearch API integration, daily alarms, batch processing
+- [x] **Phase 3: Job Fetching & Scheduling** - Adzuna/JSearch API integration, daily alarms, batch processing
 - [ ] **Phase 4: AI Scoring** - Claude API integration, job-resume matching with 0-100 scores
 - [ ] **Phase 5: Dashboard & UI** - Card-based job display, filtering, sorting, detail views
 - [ ] **Phase 6: Application Tracking** - Status management, notes, date tracking, dismiss jobs
@@ -70,10 +70,10 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — API clients for Adzuna and JSearch with normalized job schema, storage extensions
-- [ ] 03-02-PLAN.md — Scheduler, adaptive distribution, and job-fetcher orchestrator with checkpoint recovery
-- [ ] 03-03-PLAN.md — Background service worker integration with alarm handling, batch recovery, message routing
-- [ ] 03-04-PLAN.md — Settings UI for fetch scheduling, search preferences, manual trigger, and human verification
+- [x] 03-01-PLAN.md — API clients for Adzuna and JSearch with normalized job schema, storage extensions
+- [x] 03-02-PLAN.md — Scheduler, adaptive distribution, and job-fetcher orchestrator with checkpoint recovery
+- [x] 03-03-PLAN.md — Background service worker integration with alarm handling, batch recovery, message routing
+- [x] 03-04-PLAN.md — Settings UI for fetch scheduling, search preferences, manual trigger, and human verification
 
 ### Phase 4: AI Scoring
 **Goal**: Each fetched job receives 0-100 match score with reasoning based on resume comparison using Claude API
@@ -159,7 +159,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 4/4 | Complete | 2026-02-05 |
 | 2. Resume Management | 2/2 | Complete | 2026-02-05 |
-| 3. Job Fetching & Scheduling | 0/4 | Not started | - |
+| 3. Job Fetching & Scheduling | 4/4 | Complete | 2026-02-05 |
 | 4. AI Scoring | 0/TBD | Not started | - |
 | 5. Dashboard & UI | 0/TBD | Not started | - |
 | 6. Application Tracking | 0/TBD | Not started | - |
