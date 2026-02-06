@@ -57,20 +57,23 @@ Plans:
 - [x] 02-02-PLAN.md — Resume management UI in settings panel with file upload, text paste, and human verification
 
 ### Phase 3: Job Fetching & Scheduling
-**Goal**: Extension automatically fetches jobs daily at 6 AM PST from Adzuna and JSearch APIs with manual trigger fallback
+**Goal**: Extension automatically fetches jobs daily at user-configured time from Adzuna and JSearch APIs with adaptive distribution and manual trigger fallback
 **Depends on**: Phase 1 (API error handling, batch processing patterns)
 **Requirements**: FETCH-01, FETCH-02, FETCH-03, FETCH-04, FETCH-05, FETCH-06, FETCH-07, ERROR-02, ERROR-03, ERROR-04, ERROR-05
 **Success Criteria** (what must be TRUE):
-  1. Extension fetches jobs daily at 6 AM PST via chrome.alarms without user intervention
+  1. Extension fetches jobs daily at user-configured time via chrome.alarms without user intervention
   2. User can manually trigger job fetch on demand via "Fetch Jobs Now" button
   3. Extension successfully fetches jobs from both Adzuna API and JSearch API
   4. Extension handles service worker termination mid-fetch and resumes from last checkpoint
   5. Extension caps job fetching at 100 jobs per day across both APIs
   6. Extension verifies alarm exists on browser startup and recreates if missing
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 03-01: TBD during planning
+- [ ] 03-01-PLAN.md — API clients for Adzuna and JSearch with normalized job schema, storage extensions
+- [ ] 03-02-PLAN.md — Scheduler, adaptive distribution, and job-fetcher orchestrator with checkpoint recovery
+- [ ] 03-03-PLAN.md — Background service worker integration with alarm handling, batch recovery, message routing
+- [ ] 03-04-PLAN.md — Settings UI for fetch scheduling, search preferences, manual trigger, and human verification
 
 ### Phase 4: AI Scoring
 **Goal**: Each fetched job receives 0-100 match score with reasoning based on resume comparison using Claude API
@@ -150,13 +153,13 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 4/4 | Complete | 2026-02-05 |
 | 2. Resume Management | 2/2 | Complete | 2026-02-05 |
-| 3. Job Fetching & Scheduling | 0/TBD | Not started | - |
+| 3. Job Fetching & Scheduling | 0/4 | Not started | - |
 | 4. AI Scoring | 0/TBD | Not started | - |
 | 5. Dashboard & UI | 0/TBD | Not started | - |
 | 6. Application Tracking | 0/TBD | Not started | - |
@@ -165,4 +168,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-05* (Phase 2 complete)
+*Last updated: 2026-02-05* (Phase 3 planned)
