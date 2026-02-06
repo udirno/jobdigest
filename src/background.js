@@ -3,6 +3,7 @@ import { ApiError, getUserMessage, createApiError } from './errors.js';
 import { keepAlive } from './keep-alive.js';
 import { scheduleDailyFetch, verifyAlarmExists, getNextFetchTime } from './scheduler.js';
 import { runJobFetch, resumeJobFetch } from './job-fetcher.js';
+import { scoreUnscoredJobs } from './job-scorer.js';
 
 /**
  * Service worker lifecycle management
@@ -203,6 +204,40 @@ async function handleMessage(message, sender) {
       await scheduleDailyFetch(hour, minute);
       const nextTime = await getNextFetchTime();
       return { success: true, nextFetchTime: nextTime ? nextTime.toISOString() : null };
+    }
+
+    case 'SCORE_JOBS': {
+      // Manual scoring trigger (e.g., after resume upload or re-score request)
+      console.log('Manual scoring triggered');
+      try {
+        const result = await keepAlive.withKeepAlive('ai-scoring', async () => {
+          return await scoreUnscoredJobs();
+        });
+        return { success: true, ...result };
+      } catch (error) {
+        console.error('Manual scoring failed:', error);
+        return { success: false, error: error.message };
+      }
+    }
+
+    case 'GET_SCORING_STATUS': {
+      // Return scoring state for UI display
+      const jobs = await storage.getJobs();
+      const jobList = Object.values(jobs);
+      const scored = jobList.filter(j => j.score !== null && j.score !== undefined && j.score >= 0).length;
+      const unscored = jobList.filter(j => j.score === null || j.score === undefined).length;
+      const failed = jobList.filter(j => j.score === -1).length;
+      const total = jobList.length;
+
+      return {
+        scored,
+        unscored,
+        failed,
+        total,
+        averageScore: scored > 0
+          ? Math.round(jobList.filter(j => j.score >= 0).reduce((sum, j) => sum + j.score, 0) / scored)
+          : null
+      };
     }
 
     default:
