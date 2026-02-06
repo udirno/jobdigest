@@ -1,12 +1,14 @@
 // Storage key constants
 export const STORAGE_KEYS = {
   API_KEYS: 'apiKeys',       // { claude: string, adzuna: { appId: string, appKey: string }, jsearch: string }
-  SETTINGS: 'settings',       // { searchKeywords: [], location: '', ... }
+  SETTINGS: 'settings',       // { fetchHour: number, fetchMinute: number, timezone: string, searchKeywords: [], location: '', salaryMin: number|null, datePosted: string, employmentType: string, remoteOnly: boolean }
   RESUME: 'resume',           // { text: string, fileName: string, uploadedAt: string }
   JOBS: 'jobs',               // { [jobId]: { ...jobData, generated?: { coverLetter, recruiterMsg } } }
   DAILY_STATS: 'dailyStats',  // { date: 'YYYY-MM-DD', jobsFetched: number }
   ONBOARDING: 'onboarding',   // { completed: boolean, completedAt: string }
-  BATCH_PROGRESS: 'batchProgress' // { inProgress: boolean, lastBatchIndex: number, totalBatches: number }
+  BATCH_PROGRESS: 'batchProgress', // { inProgress: boolean, lastBatchIndex: number, totalBatches: number }
+  FETCH_HISTORY: 'fetchHistory', // Array of { date: string, startedAt: string, completedAt: string|null, status: string, jobsFetched: number, adzunaCount: number, jsearchCount: number, errors: string[] }
+  ADAPTIVE_METRICS: 'adaptiveMetrics' // { adzuna: { recentWindow: [] }, jsearch: { recentWindow: [] }, lastCalibration: string|null }
 };
 
 // Storage abstraction layer
@@ -211,5 +213,84 @@ export const storage = {
    */
   async clearResume() {
     await this.set(STORAGE_KEYS.RESUME, null);
+  },
+
+  /**
+   * Get settings with defaults
+   * @returns {Promise<Object>} Settings object
+   */
+  async getSettings() {
+    const settings = await this.get(STORAGE_KEYS.SETTINGS);
+    return settings || {
+      fetchHour: 6,
+      fetchMinute: 0,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      searchKeywords: [],
+      location: '',
+      salaryMin: null,
+      datePosted: 'all',
+      employmentType: 'FULLTIME',
+      remoteOnly: false
+    };
+  },
+
+  /**
+   * Save settings (merges with existing)
+   * @param {Object} settings - Settings object (partial update safe)
+   * @returns {Promise<void>}
+   */
+  async setSettings(settings) {
+    const existing = await this.getSettings();
+    const merged = {
+      ...existing,
+      ...settings
+    };
+    await this.set(STORAGE_KEYS.SETTINGS, merged);
+  },
+
+  /**
+   * Get fetch history
+   * @returns {Promise<Array>} Fetch history array (last 7 entries)
+   */
+  async getFetchHistory() {
+    const history = await this.get(STORAGE_KEYS.FETCH_HISTORY);
+    return history || [];
+  },
+
+  /**
+   * Add fetch history entry (keeps last 7 entries)
+   * @param {Object} entry - Fetch history entry
+   * @returns {Promise<void>}
+   */
+  async addFetchHistoryEntry(entry) {
+    const history = await this.getFetchHistory();
+    history.push(entry);
+
+    // Keep only last 7 entries
+    const trimmed = history.slice(-7);
+
+    await this.set(STORAGE_KEYS.FETCH_HISTORY, trimmed);
+  },
+
+  /**
+   * Get adaptive metrics
+   * @returns {Promise<Object>} Adaptive metrics object
+   */
+  async getAdaptiveMetrics() {
+    const metrics = await this.get(STORAGE_KEYS.ADAPTIVE_METRICS);
+    return metrics || {
+      adzuna: { recentWindow: [] },
+      jsearch: { recentWindow: [] },
+      lastCalibration: null
+    };
+  },
+
+  /**
+   * Save adaptive metrics
+   * @param {Object} metrics - Adaptive metrics object
+   * @returns {Promise<void>}
+   */
+  async setAdaptiveMetrics(metrics) {
+    await this.set(STORAGE_KEYS.ADAPTIVE_METRICS, metrics);
   }
 };
