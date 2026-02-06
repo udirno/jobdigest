@@ -1,4 +1,4 @@
-import { storage } from './storage.js';
+import { storage, STORAGE_KEYS } from './storage.js';
 import { processResumeFile } from './resume-parser.js';
 
 /**
@@ -203,6 +203,40 @@ export async function initSettings(container) {
         <div class="save-status" id="save-status"></div>
       </div>
     </div>
+
+    <!-- Data Management Section -->
+    <div class="settings-section">
+      <h3 class="section-title">Data Management</h3>
+      <p class="section-description">Clear stored data. These actions cannot be undone.</p>
+
+      <div class="data-mgmt-actions">
+        <div class="data-mgmt-row">
+          <div class="data-mgmt-info">
+            <span class="data-mgmt-label">Clear All Jobs</span>
+            <span class="data-mgmt-hint">Remove all fetched jobs and their scores</span>
+          </div>
+          <button type="button" id="clear-jobs-btn" class="btn-danger-sm">Clear</button>
+        </div>
+
+        <div class="data-mgmt-row">
+          <div class="data-mgmt-info">
+            <span class="data-mgmt-label">Clear All Scores</span>
+            <span class="data-mgmt-hint">Remove scores but keep jobs</span>
+          </div>
+          <button type="button" id="clear-scores-btn" class="btn-danger-sm">Clear</button>
+        </div>
+
+        <div class="data-mgmt-row">
+          <div class="data-mgmt-info">
+            <span class="data-mgmt-label">Reset Settings</span>
+            <span class="data-mgmt-hint">Restore search preferences to defaults (API keys preserved)</span>
+          </div>
+          <button type="button" id="reset-settings-btn" class="btn-danger-sm">Reset</button>
+        </div>
+      </div>
+
+      <div class="status-indicator" id="data-mgmt-status"></div>
+    </div>
   `;
 
   // Populate hour options (0-23)
@@ -325,6 +359,16 @@ function attachEventListeners(container) {
   // Save search preferences
   const saveSearchBtn = container.querySelector('#save-search-btn');
   saveSearchBtn.addEventListener('click', handleSaveSearchPrefs);
+
+  // Data management buttons
+  const clearJobsBtn = container.querySelector('#clear-jobs-btn');
+  if (clearJobsBtn) clearJobsBtn.addEventListener('click', handleClearJobs);
+
+  const clearScoresBtn = container.querySelector('#clear-scores-btn');
+  if (clearScoresBtn) clearScoresBtn.addEventListener('click', handleClearScores);
+
+  const resetSettingsBtn = container.querySelector('#reset-settings-btn');
+  if (resetSettingsBtn) resetSettingsBtn.addEventListener('click', handleResetSettings);
 }
 
 /**
@@ -808,5 +852,82 @@ async function loadFetchStatus() {
     }
   } catch (error) {
     console.error('Load fetch status error:', error);
+  }
+}
+
+/**
+ * Handle clear all jobs
+ */
+async function handleClearJobs() {
+  const statusEl = document.getElementById('data-mgmt-status');
+  if (!confirm('Clear all jobs and scores? This cannot be undone.')) return;
+
+  try {
+    await storage.set(STORAGE_KEYS.JOBS, {});
+    statusEl.className = 'status-indicator success';
+    statusEl.textContent = 'All jobs cleared';
+    setTimeout(() => { statusEl.className = 'status-indicator'; statusEl.textContent = ''; }, 3000);
+  } catch (error) {
+    statusEl.className = 'status-indicator error';
+    statusEl.textContent = 'Failed to clear jobs';
+  }
+}
+
+/**
+ * Handle clear all scores
+ */
+async function handleClearScores() {
+  const statusEl = document.getElementById('data-mgmt-status');
+  if (!confirm('Clear all scores? Jobs will be kept but scores removed.')) return;
+
+  try {
+    const jobs = await storage.getJobs();
+    for (const jobId of Object.keys(jobs)) {
+      jobs[jobId].score = null;
+      jobs[jobId].scoreReasoning = null;
+      jobs[jobId].scoredAt = null;
+      jobs[jobId].scoreDetails = null;
+    }
+    await storage.set(STORAGE_KEYS.JOBS, jobs);
+    statusEl.className = 'status-indicator success';
+    statusEl.textContent = 'All scores cleared';
+    setTimeout(() => { statusEl.className = 'status-indicator'; statusEl.textContent = ''; }, 3000);
+  } catch (error) {
+    statusEl.className = 'status-indicator error';
+    statusEl.textContent = 'Failed to clear scores';
+  }
+}
+
+/**
+ * Handle reset settings to defaults
+ */
+async function handleResetSettings() {
+  const statusEl = document.getElementById('data-mgmt-status');
+  if (!confirm('Reset search preferences to defaults? API keys will be preserved.')) return;
+
+  try {
+    await storage.setSettings({
+      fetchHour: 6,
+      fetchMinute: 0,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      searchKeywords: [],
+      location: '',
+      salaryMin: null,
+      datePosted: 'all',
+      employmentType: 'FULLTIME',
+      remoteOnly: false
+    });
+    statusEl.className = 'status-indicator success';
+    statusEl.textContent = 'Settings reset to defaults';
+    setTimeout(() => { statusEl.className = 'status-indicator'; statusEl.textContent = ''; }, 3000);
+
+    // Refresh settings UI to show defaults
+    const settingsContent = document.getElementById('settings-content');
+    if (settingsContent) {
+      await initSettings(settingsContent);
+    }
+  } catch (error) {
+    statusEl.className = 'status-indicator error';
+    statusEl.textContent = 'Failed to reset settings';
   }
 }

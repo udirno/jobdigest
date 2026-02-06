@@ -989,3 +989,43 @@ body {
   opacity: 1;
   visibility: visible;
 }
+
+/* Data management */
+.data-mgmt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.data-mgmt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+.data-mgmt-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.data-mgmt-label {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.data-mgmt-hint {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.btn-danger-sm {
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid var(--error);
+  color: var(--error);
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-danger-sm:hover {
+  background: var(--error);
+  color: white;
+}
