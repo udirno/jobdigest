@@ -1,4 +1,5 @@
 import { initSettings } from './settings.js';
+import { initDashboardControls, renderJobGrid } from './dashboard/filters.js';
 
 // DOM elements
 let settingsBtn, closeSettingsBtn, settingsPanel, mainView;
@@ -31,6 +32,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize settings panel
   const settingsContent = document.getElementById('settings-content');
   initSettings(settingsContent);
+
+  // Initialize dashboard
+  initDashboardControls();
+  await renderJobGrid();
+
+  // Add empty state action button handler
+  const emptyStateBtn = document.getElementById('empty-state-action');
+  if (emptyStateBtn) {
+    emptyStateBtn.addEventListener('click', openSettings);
+  }
 });
 
 /**
@@ -42,7 +53,11 @@ function openSettings() {
 
 /**
  * Close settings panel
+ * Refresh dashboard when closing settings (in case jobs were fetched)
  */
-function closeSettings() {
+async function closeSettings() {
   settingsPanel.classList.add('hidden');
+
+  // Refresh dashboard to show any newly fetched jobs
+  await renderJobGrid();
 }
