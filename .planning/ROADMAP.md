@@ -33,10 +33,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Service worker persists state to chrome.storage.local and restores on restart
   4. API calls handle failures gracefully with user-friendly error messages
   5. Extension requests and uses unlimitedStorage permission to avoid quota issues
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: TBD during planning
+- [ ] 01-01-PLAN.md — Manifest V3 scaffolding, storage abstraction, error handling infrastructure
+- [ ] 01-02-PLAN.md — Service worker lifecycle management, keep-alive, daily cap
+- [ ] 01-03-PLAN.md — Onboarding wizard and settings page for API key configuration
+- [ ] 01-04-PLAN.md — Integration verification and human acceptance testing
 
 ### Phase 2: Resume Management
 **Goal**: Users can upload resume in multiple formats (PDF/DOCX/text) which is parsed and stored for AI scoring
@@ -150,7 +153,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Infrastructure | 0/TBD | Not started | - |
+| 1. Foundation & Infrastructure | 0/4 | Planning complete | - |
 | 2. Resume Management | 0/TBD | Not started | - |
 | 3. Job Fetching & Scheduling | 0/TBD | Not started | - |
 | 4. AI Scoring | 0/TBD | Not started | - |
