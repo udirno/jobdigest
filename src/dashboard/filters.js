@@ -109,15 +109,7 @@ export async function renderJobGrid() {
   if (jobs.length === 0) {
     grid.style.display = 'none';
     emptyState.style.display = 'flex';
-
-    // Hide toolbar if no jobs at all
-    const allJobs = await storage.getJobs();
-    if (Object.keys(allJobs).length === 0) {
-      toolbar.style.display = 'none';
-    } else {
-      toolbar.style.display = 'flex';
-    }
-
+    toolbar.style.display = 'flex'; // Keep toolbar visible even with no jobs
     updateEmptyState(currentFilter);
     return;
   }
