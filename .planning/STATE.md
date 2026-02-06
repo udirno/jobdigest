@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 ## Current Position
 
 Phase: 2 of 8 (Resume Management)
-Plan: 1 of 2
-Status: In progress
-Last activity: 2026-02-06 — Completed 02-01-PLAN.md (Resume processing infrastructure)
+Plan: 2 of 2
+Status: Phase complete
+Last activity: 2026-02-06 — Completed 02-02-PLAN.md (Resume management UI)
 
-Progress: [█████░░░░░] 55.6%
+Progress: [██████░░░░] 66.7%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 6 minutes
-- Total execution time: 0.47 hours
+- Total plans completed: 6
+- Average duration: 7 minutes
+- Total execution time: 0.7 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 | 4 | 27min | 7min |
-| 02 | 1 | 1min | 1min |
+| 02 | 2 | 14min | 7min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (6min), 01-03 (9min), 01-04 (8min), 02-01 (1min)
-- Trend: Fast library vendoring, steady complexity for feature work
+- Last 5 plans: 01-03 (9min), 01-04 (8min), 02-01 (1min), 02-02 (13min)
+- Trend: Steady velocity ~7min/plan for feature work with UI
 
 *Updated after each plan completion*
 
@@ -81,6 +81,12 @@ Recent decisions affecting current work:
 - File validation: 5MB limit prevents memory issues, most resumes 100-500KB so provides comfortable headroom
 - Text validation: Minimum 50 characters required to catch corrupted files or scanned images without OCR
 
+**From 02-02 execution:**
+- Resume UI positioning: Resume section placed above API Keys in settings for user-facing feature prominence
+- Hidden class CSS scoping: Scoped to :not(.settings-panel) to prevent interference with slide animation
+- Relative date display: Show "today/yesterday/N days ago" instead of ISO timestamps for better UX
+- File input reset: Reset after upload allows re-uploading same file if needed
+
 ### Pending Todos
 
 None yet.
@@ -89,7 +95,7 @@ None yet.
 
 **Phase 2 - Resume Management:**
 - ~~Offscreen Document lifecycle management for PDF.js and mammoth.js needs careful implementation to avoid memory leaks~~ RESOLVED: Libraries run in popup context where DOM and Web Workers are available, no offscreen document needed
-- mammoth.js must be loaded via script tag in popup.html before use (Plan 02-02 will handle this)
+- ~~mammoth.js must be loaded via script tag in popup.html before use~~ RESOLVED: Script tag added in 02-02, window.mammoth now available
 
 **Phase 4 - AI Scoring:**
 - Claude prompt engineering for 0-100 scoring quality vs token cost balance needs experimentation
@@ -101,8 +107,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T03:07:53 UTC
-Stopped at: Completed 02-01-PLAN.md (Resume processing infrastructure)
+Last session: 2026-02-06T03:24:13 UTC
+Stopped at: Completed 02-02-PLAN.md (Resume management UI)
 Resume file: None
 
-**Phase 2 in progress:** Plan 02-01 complete (resume processing infrastructure). Next: Plan 02-02 (Resume UI).
+**Phase 2 complete:** Resume management feature fully implemented. Users can upload PDF/DOCX resumes or paste text, with persistence in chrome.storage.local. Next phase: Phase 3 (Job Fetching) or Phase 4 (AI Scoring) per ROADMAP.md wave structure.
