@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Eliminate 2+ hours per day of manual job browsing by auto-fetching, AI-scoring, and tracking jobs with intelligent filtering that surfaces only high-quality matches.
-**Current focus:** Phase 4 - AI Scoring (in progress)
+**Current focus:** Phase 4 - AI Scoring (complete)
 
 ## Current Position
 
 Phase: 4 of 8 (AI Scoring)
-Plan: 2 of 3
-Status: In progress
-Last activity: 2026-02-06 — Completed 04-02-PLAN.md (Scoring pipeline integration)
+Plan: 2 of 2
+Status: Phase complete
+Last activity: 2026-02-05 — Completed Phase 4 (AI Scoring)
 
-Progress: [████████████░░] 80.0%
+Progress: [██████████] 100.0%
 
 ## Performance Metrics
 
@@ -160,8 +160,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T07:24:48 UTC
-Stopped at: Completed 04-02-PLAN.md (Scoring pipeline integration)
+Last session: 2026-02-05T23:00:00 UTC
+Stopped at: Completed Phase 4 (AI Scoring)
 Resume file: None
 
-**Phase 4 in progress (2/3 plans):** AI scoring integrated into fetch pipeline. Scoring runs automatically after jobs are fetched. Scoring failures isolated (don't crash fetch pipeline). Manual scoring available via SCORE_JOBS message handler. GET_SCORING_STATUS provides UI statistics. Jobs in storage now have score, scoreReasoning, scoredAt, scoreDetails fields. Ready for dashboard display (Plan 04-03).
+**Phase 4 complete (2/2 plans):** AI scoring engine integrated into job fetching pipeline. Claude Haiku 4.5 scores each fetched job 0-100 based on resume match using structured outputs and prompt caching. Scoring emphasizes technical skills and tech stack (60% weighting). Jobs saved with score, reasoning, scoredAt, and dimension breakdown (skills_match, experience_level, tech_stack_alignment, title_relevance, industry_fit). Manual scoring trigger (SCORE_JOBS) and status query (GET_SCORING_STATUS) available via message handlers. Error isolation ensures scoring failures don't crash fetch pipeline. Ready for Phase 5 (Dashboard & UI).

@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Infrastructure** - Extension scaffolding, service worker lifecycle, storage patterns
 - [x] **Phase 2: Resume Management** - Upload/parse PDF/DOCX/text, store resume for AI features
 - [x] **Phase 3: Job Fetching & Scheduling** - Adzuna/JSearch API integration, daily alarms, batch processing
-- [ ] **Phase 4: AI Scoring** - Claude API integration, job-resume matching with 0-100 scores
+- [x] **Phase 4: AI Scoring** - Claude API integration, job-resume matching with 0-100 scores
 - [ ] **Phase 5: Dashboard & UI** - Card-based job display, filtering, sorting, detail views
 - [ ] **Phase 6: Application Tracking** - Status management, notes, date tracking, dismiss jobs
 - [ ] **Phase 7: AI Content Generation** - Cover letter and recruiter message generation
@@ -87,8 +87,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Claude API client with structured outputs and prompt caching, job scorer orchestrator
-- [ ] 04-02-PLAN.md — Integration into fetch pipeline and background message handlers for scoring
+- [x] 04-01-PLAN.md — Claude API client with structured outputs and prompt caching, job scorer orchestrator
+- [x] 04-02-PLAN.md — Integration into fetch pipeline and background message handlers for scoring
 
 ### Phase 5: Dashboard & UI
 **Goal**: Users view scored jobs in card-based dashboard with filtering, sorting, and detail views
@@ -161,7 +161,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 1. Foundation & Infrastructure | 4/4 | Complete | 2026-02-05 |
 | 2. Resume Management | 2/2 | Complete | 2026-02-05 |
 | 3. Job Fetching & Scheduling | 4/4 | Complete | 2026-02-05 |
-| 4. AI Scoring | 0/2 | Not started | - |
+| 4. AI Scoring | 2/2 | Complete | 2026-02-05 |
 | 5. Dashboard & UI | 0/TBD | Not started | - |
 | 6. Application Tracking | 0/TBD | Not started | - |
 | 7. AI Content Generation | 0/TBD | Not started | - |
@@ -169,4 +169,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-05* (Phase 4 planned)
+*Last updated: 2026-02-05* (Phase 4 executed)
