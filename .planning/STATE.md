@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Eliminate 2+ hours per day of manual job browsing by auto-fetching, AI-scoring, and tracking jobs with intelligent filtering that surfaces only high-quality matches.
-**Current focus:** Phase 4 - AI Scoring (complete)
+**Current focus:** Phase 5 - Dashboard & UI (complete)
 
 ## Current Position
 
-Phase: 4 of 8 (AI Scoring)
+Phase: 5 of 8 (Dashboard & UI)
 Plan: 2 of 2
 Status: Phase complete
-Last activity: 2026-02-05 — Completed Phase 4 (AI Scoring)
+Last activity: 2026-02-06 — Completed Phase 5 (Dashboard & UI)
 
-Progress: [██████████] 100.0%
+Progress: [████████░░] 62.5%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 14
 - Average duration: 8 minutes
-- Total execution time: 1.6 hours
+- Total execution time: 1.7 hours
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: [██████████] 100.0%
 | 02 | 2 | 14min | 7min |
 | 03 | 4 | 90min | 23min |
 | 04 | 2 | 4min | 2min |
+| 05 | 2 | 8min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (1min), 03-04 (85min), 04-01 (2min), 04-02 (2min)
-- Trend: Phase 4 progressing quickly. Both plans executed cleanly with no deviations
+- Last 5 plans: 03-04 (85min), 04-01 (2min), 04-02 (2min), 05-01 (3min), 05-02 (5min)
+- Trend: Phase 5 completed with 3 UX fixes during execution. Dashboard UI functional and user-tested
 
 *Updated after each plan completion*
 
@@ -139,6 +140,25 @@ Recent decisions affecting current work:
 - Keep-alive separation: Manual scoring uses 'ai-scoring' tag, distinct from 'job-fetch' tag used by fetch pipeline
 - Message handlers: SCORE_JOBS (manual scoring with keep-alive) and GET_SCORING_STATUS (lightweight storage query for UI stats)
 
+**From 05-01 execution:**
+- Popup width: Expanded from 400px to 780px to support multi-column grid layout (Chrome allows up to 800px)
+- Grid layout: CSS Grid with repeat(auto-fill, minmax(230px, 1fr)) for automatic 1-3 column responsive behavior
+- Score badge colors: High (80-100) green #81c784, medium (60-79) amber #ffd54f, low (0-59) red #e57373 with WCAG AA contrast
+- Description preview: Smart extraction using keyword matching (require, must have, experience with) to surface key requirements
+- Status dropdown: Immediate persistence to storage without full re-render for smooth UX
+- Empty state context: Different messages for "no jobs" vs "no filtered jobs" with adaptive action buttons
+- Toolbar visibility: Always visible even with zero jobs (initial implementation hid it, corrected for consistency)
+
+**From 05-02 execution:**
+- Modal implementation: Native <dialog> element with showModal() for proper modal behavior and accessibility
+- Score breakdown: 2-column grid for 5 dimensions with colored progress bars matching score ranges
+- Modal navigation: Arrow key support (Left/Right) in addition to Previous/Next buttons, tracks position in filtered array
+- Tooltip positioning: Below badge with text wrapping (max-width 200px) to prevent off-screen overflow on all card positions
+- Settings UX: Changed close button from X to back arrow (←) for clearer affordance of returning to dashboard
+- Data management safety: Confirmation dialogs for all destructive actions (clear jobs, clear scores, reset settings)
+- Dialog visibility fix: Moved display:flex to [open] selector to prevent modal showing on page load
+- API key preservation: Reset settings restores search preferences but preserves configured API keys
+
 ### Pending Todos
 
 None yet.
@@ -160,8 +180,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-05T23:00:00 UTC
-Stopped at: Completed Phase 4 (AI Scoring)
+Last session: 2026-02-06T22:00:00 UTC
+Stopped at: Completed Phase 5 (Dashboard & UI)
 Resume file: None
 
-**Phase 4 complete (2/2 plans):** AI scoring engine integrated into job fetching pipeline. Claude Haiku 4.5 scores each fetched job 0-100 based on resume match using structured outputs and prompt caching. Scoring emphasizes technical skills and tech stack (60% weighting). Jobs saved with score, reasoning, scoredAt, and dimension breakdown (skills_match, experience_level, tech_stack_alignment, title_relevance, industry_fit). Manual scoring trigger (SCORE_JOBS) and status query (GET_SCORING_STATUS) available via message handlers. Error isolation ensures scoring failures don't crash fetch pipeline. Ready for Phase 5 (Dashboard & UI).
+**Phase 5 complete (2/2 plans):** Card-based dashboard with 780px wide popup displaying scored jobs in responsive 1-3 column grid. Jobs show color-coded score badges (green/amber/red), title, company, location, posted date, salary, and smart description previews extracting key requirements. Filter by status (All/New/Contacted/Applied/Passed) and sort by score/date/company/title with default highest-score-first ordering. Click cards to open detail modal showing full description, overall score, AI reasoning, and 5-dimension breakdown (skills match, experience level, tech stack, title relevance, industry fit) with colored progress bars. Modal navigation via Previous/Next buttons or arrow keys. Score tooltips explain calculation on hover/focus. Data management in settings: clear all jobs, clear scores only, or reset search preferences while preserving API keys. Status dropdowns on cards persist changes immediately. Context-aware empty states guide users to fetch jobs or adjust filters. All 8 Phase 5 requirements (DASH-01 through DASH-07, CONFIG-09) verified complete. Ready for Phase 6 (Application Tracking).
