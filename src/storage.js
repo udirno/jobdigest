@@ -186,5 +186,30 @@ export const storage = {
       lastBatchIndex: 0,
       totalBatches: 0
     });
+  },
+
+  /**
+   * Get resume data
+   * @returns {Promise<Object|null>} Resume object or null if not set
+   */
+  async getResume() {
+    return await this.get(STORAGE_KEYS.RESUME);
+  },
+
+  /**
+   * Save resume data
+   * @param {Object} resume - Resume object { text: string, fileName: string, uploadedAt: string }
+   * @returns {Promise<void>}
+   */
+  async setResume(resume) {
+    await this.set(STORAGE_KEYS.RESUME, resume);
+  },
+
+  /**
+   * Clear resume data
+   * @returns {Promise<void>}
+   */
+  async clearResume() {
+    await this.set(STORAGE_KEYS.RESUME, null);
   }
 };
