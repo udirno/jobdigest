@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Resume Management** - Upload/parse PDF/DOCX/text, store resume for AI features
 - [x] **Phase 3: Job Fetching & Scheduling** - Adzuna/JSearch API integration, daily alarms, batch processing
 - [x] **Phase 4: AI Scoring** - Claude API integration, job-resume matching with 0-100 scores
-- [ ] **Phase 5: Dashboard & UI** - Card-based job display, filtering, sorting, detail views
+- [x] **Phase 5: Dashboard & UI** - Card-based job display, filtering, sorting, detail views
 - [ ] **Phase 6: Application Tracking** - Status management, notes, date tracking, dismiss jobs
 - [ ] **Phase 7: AI Content Generation** - Cover letter and recruiter message generation
 - [ ] **Phase 8: Export & Polish** - CSV export, manual controls, storage monitoring
@@ -105,8 +105,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Dashboard card grid with responsive layout, filtering, sorting, status management, empty states
-- [ ] 05-02-PLAN.md — Detail modal with score breakdown, Previous/Next navigation, tooltips, data management settings
+- [x] 05-01-PLAN.md — Dashboard card grid with responsive layout, filtering, sorting, status management, empty states
+- [x] 05-02-PLAN.md — Detail modal with score breakdown, Previous/Next navigation, tooltips, data management settings
 
 ### Phase 6: Application Tracking
 **Goal**: Users manage job application pipeline with status tracking, notes, dates, and dismiss functionality
@@ -118,10 +118,11 @@ Plans:
   3. User can add free-form notes to any job and view notes later
   4. User can dismiss/hide jobs they're not interested in and dismissed jobs don't appear in main view
   5. Status changes and notes persist in storage across sessions
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: TBD during planning
+- [ ] 06-01-PLAN.md — Dismiss with undo toast, hidden jobs filter, note indicator, storage extensions
+- [ ] 06-02-PLAN.md — Modal notes with auto-save, application date picker, modal dismiss, human verification
 
 ### Phase 7: AI Content Generation
 **Goal**: Users generate personalized cover letters and recruiter messages for specific jobs using Claude API
@@ -164,10 +165,10 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 3. Job Fetching & Scheduling | 4/4 | Complete | 2026-02-05 |
 | 4. AI Scoring | 2/2 | Complete | 2026-02-05 |
 | 5. Dashboard & UI | 2/2 | Complete | 2026-02-06 |
-| 6. Application Tracking | 0/TBD | Not started | - |
+| 6. Application Tracking | 0/2 | Not started | - |
 | 7. AI Content Generation | 0/TBD | Not started | - |
 | 8. Export & Polish | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-06* (Phase 5 complete)
+*Last updated: 2026-02-06* (Phase 6 planned)
