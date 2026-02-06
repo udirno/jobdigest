@@ -13,7 +13,7 @@ JobDigest delivers automated job searching through eight phases, starting with C
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Infrastructure** - Extension scaffolding, service worker lifecycle, storage patterns
-- [ ] **Phase 2: Resume Management** - Upload/parse PDF/DOCX/text, store resume for AI features
+- [x] **Phase 2: Resume Management** - Upload/parse PDF/DOCX/text, store resume for AI features
 - [ ] **Phase 3: Job Fetching & Scheduling** - Adzuna/JSearch API integration, daily alarms, batch processing
 - [ ] **Phase 4: AI Scoring** - Claude API integration, job-resume matching with 0-100 scores
 - [ ] **Phase 5: Dashboard & UI** - Card-based job display, filtering, sorting, detail views
@@ -53,8 +53,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Vendor PDF.js and mammoth.js libraries, create resume parser module, extend storage helpers
-- [ ] 02-02-PLAN.md — Resume management UI in settings panel with file upload, text paste, and human verification
+- [x] 02-01-PLAN.md — Vendor PDF.js and mammoth.js libraries, create resume parser module, extend storage helpers
+- [x] 02-02-PLAN.md — Resume management UI in settings panel with file upload, text paste, and human verification
 
 ### Phase 3: Job Fetching & Scheduling
 **Goal**: Extension automatically fetches jobs daily at 6 AM PST from Adzuna and JSearch APIs with manual trigger fallback
@@ -155,7 +155,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Infrastructure | 4/4 | Complete | 2026-02-05 |
-| 2. Resume Management | 0/2 | Not started | - |
+| 2. Resume Management | 2/2 | Complete | 2026-02-05 |
 | 3. Job Fetching & Scheduling | 0/TBD | Not started | - |
 | 4. AI Scoring | 0/TBD | Not started | - |
 | 5. Dashboard & UI | 0/TBD | Not started | - |
@@ -165,4 +165,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-05* (Phase 2 planned)
+*Last updated: 2026-02-05* (Phase 2 complete)
