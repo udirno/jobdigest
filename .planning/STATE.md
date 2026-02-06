@@ -5,33 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Eliminate 2+ hours per day of manual job browsing by auto-fetching, AI-scoring, and tracking jobs with intelligent filtering that surfaces only high-quality matches.
-**Current focus:** Phase 1 - Foundation & Infrastructure
+**Current focus:** Phase 2 - Resume Management
 
 ## Current Position
 
-Phase: 1 of 8 (Foundation & Infrastructure)
-Plan: 4 of 4 (complete)
-Status: Phase complete
-Last activity: 2026-02-06 — Completed 01-04-PLAN.md (Integration verification)
+Phase: 2 of 8 (Resume Management)
+Plan: 1 of 2
+Status: In progress
+Last activity: 2026-02-06 — Completed 02-01-PLAN.md (Resume processing infrastructure)
 
-Progress: [████░░░░░░] 50.0%
+Progress: [█████░░░░░] 55.6%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 7 minutes
-- Total execution time: 0.45 hours
+- Total plans completed: 5
+- Average duration: 6 minutes
+- Total execution time: 0.47 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 | 4 | 27min | 7min |
+| 02 | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4min), 01-02 (6min), 01-03 (9min), 01-04 (8min)
-- Trend: Steady complexity around 6-9 minutes per plan
+- Last 5 plans: 01-02 (6min), 01-03 (9min), 01-04 (8min), 02-01 (1min)
+- Trend: Fast library vendoring, steady complexity for feature work
 
 *Updated after each plan completion*
 
@@ -74,6 +75,12 @@ Recent decisions affecting current work:
 - Acceptance testing: 5 test scenarios confirm complete user journey from first launch through settings
 - Quality validation: All tests passed without requiring fixes, confirming Phase 1 implementation quality
 
+**From 02-01 execution:**
+- PDF.js worker path: chrome.runtime.getURL used for reliable extension context resolution instead of relative paths
+- mammoth.js loading: Script tag approach exposing window.mammoth rather than ES module import for UMD compatibility
+- File validation: 5MB limit prevents memory issues, most resumes 100-500KB so provides comfortable headroom
+- Text validation: Minimum 50 characters required to catch corrupted files or scanned images without OCR
+
 ### Pending Todos
 
 None yet.
@@ -81,8 +88,8 @@ None yet.
 ### Blockers/Concerns
 
 **Phase 2 - Resume Management:**
-- Offscreen Document lifecycle management for PDF.js and mammoth.js needs careful implementation to avoid memory leaks
-- PDF.js and mammoth.js integration has minimal examples for Manifest V3 service workers
+- ~~Offscreen Document lifecycle management for PDF.js and mammoth.js needs careful implementation to avoid memory leaks~~ RESOLVED: Libraries run in popup context where DOM and Web Workers are available, no offscreen document needed
+- mammoth.js must be loaded via script tag in popup.html before use (Plan 02-02 will handle this)
 
 **Phase 4 - AI Scoring:**
 - Claude prompt engineering for 0-100 scoring quality vs token cost balance needs experimentation
@@ -94,8 +101,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T02:43:47 UTC
-Stopped at: Completed 01-04-PLAN.md (Phase 1 complete)
+Last session: 2026-02-06T03:07:53 UTC
+Stopped at: Completed 02-01-PLAN.md (Resume processing infrastructure)
 Resume file: None
 
-**Phase 1 Complete:** Foundation & Infrastructure fully implemented and verified. Ready to begin Phase 2 - Resume Management.
+**Phase 2 in progress:** Plan 02-01 complete (resume processing infrastructure). Next: Plan 02-02 (Resume UI).
