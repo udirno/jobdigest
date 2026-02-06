@@ -666,8 +666,8 @@ async function handleFetchNow() {
     // Clear loading state
     statusEl.classList.remove('loading');
 
-    if (response.success) {
-      if (response.cap_reached) {
+    if (response.status === 'success' || response.status === 'cap_reached') {
+      if (response.status === 'cap_reached') {
         showError(statusEl, 'Daily cap reached (100 jobs). Try again tomorrow.');
       } else {
         // Check if fetch succeeded but got 0 jobs due to configuration errors
