@@ -4,6 +4,7 @@
  */
 
 import { storage } from '../storage.js';
+import { renderJobGrid } from './filters.js';
 
 /**
  * Create a job card DOM element
@@ -61,10 +62,14 @@ export function createJobCard(job) {
     </div>
 
     <div class="card-footer">
+      ${job.notes ? '<span class="note-indicator" title="Has notes">&#9998;</span>' : ''}
       <button class="btn-card-action btn-view-details" data-job-id="${job.jobId}">View Details</button>
       <a href="${job.url}" target="_blank" class="btn-view-original" rel="noopener noreferrer">
         View Original ↗
       </a>
+      <button class="btn-card-action btn-dismiss" data-job-id="${job.jobId}" title="Hide this job" aria-label="Dismiss job">
+        &times;
+      </button>
     </div>
   `;
 
@@ -90,6 +95,13 @@ export function createJobCard(job) {
   const viewOriginalLink = card.querySelector('.btn-view-original');
   viewOriginalLink.addEventListener('click', (e) => {
     e.stopPropagation(); // Prevent card click
+  });
+
+  // Add dismiss button handler
+  const dismissBtn = card.querySelector('.btn-dismiss');
+  dismissBtn.addEventListener('click', async (e) => {
+    e.stopPropagation(); // Prevent card click
+    await dismissJob(job.jobId);
   });
 
   return card;
@@ -176,4 +188,76 @@ export function formatRelativeDate(dateString) {
 
   // Fallback to formatted date
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+/**
+ * Dismiss a job (mark as dismissed and show undo toast)
+ * @param {string} jobId - Job ID to dismiss
+ */
+async function dismissJob(jobId) {
+  await storage.updateJob(jobId, { dismissed: true });
+  await renderJobGrid();
+  showUndoToast('Job hidden', async () => {
+    await storage.updateJob(jobId, { dismissed: false });
+    await renderJobGrid();
+  });
+}
+
+/**
+ * Show undo toast notification
+ * @param {string} message - Message to display
+ * @param {Function} undoCallback - Function to call when undo is clicked
+ */
+function showUndoToast(message, undoCallback) {
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.setAttribute('aria-atomic', 'true');
+  toast.innerHTML = `<span>${escapeHtml(message)}</span><button class="toast-undo">Undo</button>`;
+
+  document.body.appendChild(toast);
+
+  const undoBtn = toast.querySelector('.toast-undo');
+
+  // Auto-dismiss timeout
+  let autoHideTimer = setTimeout(() => {
+    removeToast();
+  }, 5000);
+
+  // Pause timer on focus, restart on blur
+  toast.addEventListener('focusin', () => {
+    clearTimeout(autoHideTimer);
+  });
+
+  toast.addEventListener('focusout', () => {
+    autoHideTimer = setTimeout(() => {
+      removeToast();
+    }, 5000);
+  });
+
+  // Undo button handler
+  undoBtn.addEventListener('click', async () => {
+    clearTimeout(autoHideTimer);
+    await undoCallback();
+    removeToast();
+  });
+
+  // Focus undo button for keyboard accessibility
+  undoBtn.focus();
+
+  // Trigger slide-in animation
+  setTimeout(() => {
+    toast.classList.add('toast-enter');
+  }, 10);
+
+  function removeToast() {
+    toast.classList.remove('toast-enter');
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.parentNode.removeChild(toast);
+      }
+    }, 200); // Wait for fade-out animation
+  }
 }
