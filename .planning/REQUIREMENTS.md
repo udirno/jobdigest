@@ -53,15 +53,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Application Tracking
 
-- [ ] **TRACK-01**: User can mark job with status: New (default)
-- [ ] **TRACK-02**: User can mark job with status: Contacted
-- [ ] **TRACK-03**: User can mark job with status: Applied
-- [ ] **TRACK-04**: User can mark job with status: Passed (rejected or not interested)
-- [ ] **TRACK-05**: User can add application date when marking job as Applied
-- [ ] **TRACK-06**: User can add free-form notes to any job
+- [x] **TRACK-01**: User can mark job with status: New (default)
+- [x] **TRACK-02**: User can mark job with status: Contacted
+- [x] **TRACK-03**: User can mark job with status: Applied
+- [x] **TRACK-04**: User can mark job with status: Passed (rejected or not interested)
+- [x] **TRACK-05**: User can add application date when marking job as Applied
+- [x] **TRACK-06**: User can add free-form notes to any job
 - [ ] **TRACK-07**: Extension stores generated cover letters with job for reference
 - [ ] **TRACK-08**: Extension stores generated recruiter messages with job for reference
-- [ ] **TRACK-09**: User can dismiss/hide jobs they're not interested in
+- [x] **TRACK-09**: User can dismiss/hide jobs they're not interested in
 
 ### Export
 
