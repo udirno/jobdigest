@@ -17,6 +17,11 @@ let saveTimeout = null;
 let pendingJobId = null;
 let pendingNotes = null;
 
+// Debounce state for content auto-save
+let contentSaveTimeout = null;
+let pendingContentJobId = null;
+let pendingContentUpdate = null;
+
 /**
  * Initialize job modal
  * Call this after DOM is loaded
@@ -84,6 +89,18 @@ export function initJobModal() {
       pendingJobId = null;
       pendingNotes = null;
     }
+
+    // Flush pending content save
+    if (contentSaveTimeout) {
+      clearTimeout(contentSaveTimeout);
+      contentSaveTimeout = null;
+    }
+    if (pendingContentJobId && pendingContentUpdate !== null) {
+      await storage.updateJob(pendingContentJobId, { generated: pendingContentUpdate });
+      pendingContentJobId = null;
+      pendingContentUpdate = null;
+    }
+
     currentJobs = [];
     currentIndex = 0;
   });
@@ -210,6 +227,47 @@ function renderModalContent(job) {
     </div>
   `;
 
+  // Content generation section
+  html += `
+    <div class="content-gen-section">
+      <h3 class="content-gen-title">AI Content</h3>
+
+      <!-- Custom instructions input -->
+      <div class="custom-instructions">
+        <input type="text"
+          id="custom-instructions"
+          class="custom-instructions-input"
+          placeholder="Custom instructions (e.g., emphasize leadership, mention relocation)"
+          maxlength="200"
+          data-job-id="${job.jobId}" />
+      </div>
+
+      <!-- Cover Letter Section -->
+      <div class="content-block" id="cover-letter-block">
+        <div class="content-block-header" data-toggle="cover-letter-body">
+          <span class="content-block-label">Cover Letter</span>
+          <span class="content-block-status" id="cl-status">${job.generated?.coverLetter ? (job.generated.coverLetter.isEdited ? 'Edited' : 'Generated') : ''}</span>
+          <span class="content-block-chevron">&#9660;</span>
+        </div>
+        <div class="content-block-body" id="cover-letter-body" style="display: ${job.generated?.coverLetter ? 'block' : 'none'};">
+          ${job.generated?.coverLetter ? renderContentArea('coverLetter', job) : renderGenerateButton('coverLetter', job.jobId)}
+        </div>
+      </div>
+
+      <!-- Recruiter Message Section -->
+      <div class="content-block" id="recruiter-msg-block">
+        <div class="content-block-header" data-toggle="recruiter-msg-body">
+          <span class="content-block-label">Recruiter Message</span>
+          <span class="content-block-status" id="rm-status">${job.generated?.recruiterMessage ? (job.generated.recruiterMessage.isEdited ? 'Edited' : 'Generated') : ''}</span>
+          <span class="content-block-chevron">&#9660;</span>
+        </div>
+        <div class="content-block-body" id="recruiter-msg-body" style="display: ${job.generated?.recruiterMessage ? 'block' : 'none'};">
+          ${job.generated?.recruiterMessage ? renderContentArea('recruiterMessage', job) : renderGenerateButton('recruiterMessage', job.jobId)}
+        </div>
+      </div>
+    </div>
+  `;
+
   // Notes section (always shown)
   html += `
     <div class="notes-section">
@@ -248,6 +306,230 @@ function renderModalContent(job) {
   modalBody.innerHTML = html;
 
   // Attach event listeners after DOM is ready
+
+  // Toggle expand/collapse for content blocks
+  const contentBlockHeaders = modalBody.querySelectorAll('.content-block-header');
+  contentBlockHeaders.forEach(header => {
+    header.addEventListener('click', () => {
+      const targetId = header.dataset.toggle;
+      const body = document.getElementById(targetId);
+      if (body) {
+        const isExpanded = body.style.display === 'block';
+        body.style.display = isExpanded ? 'none' : 'block';
+        header.classList.toggle('expanded', !isExpanded);
+      }
+    });
+  });
+
+  // Generate button click handlers
+  const generateBtns = modalBody.querySelectorAll('.btn-generate');
+  generateBtns.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const contentType = e.target.dataset.contentType;
+      const jobId = e.target.dataset.jobId;
+
+      // Get custom instructions
+      const customInstructions = document.getElementById('custom-instructions')?.value || '';
+
+      // Disable button and show loading state
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+      btn.classList.add('loading');
+
+      // Clear any previous error
+      const existingError = btn.parentElement.querySelector('.gen-error');
+      if (existingError) existingError.remove();
+
+      try {
+        // Send message to background
+        const response = await chrome.runtime.sendMessage({
+          type: 'GENERATE_CONTENT',
+          contentType,
+          jobId,
+          customInstructions
+        });
+
+        if (!response.success) {
+          throw new Error(response.error || 'Generation failed');
+        }
+
+        // Update currentJobs with new generated data
+        const jobs = await storage.getJobs();
+        currentJobs[currentIndex] = jobs[jobId];
+
+        // Re-render modal content
+        renderModalContent(currentJobs[currentIndex]);
+
+        // Update navigation state
+        updateNavigation();
+
+        // Auto-expand the section
+        const bodyId = contentType === 'coverLetter' ? 'cover-letter-body' : 'recruiter-msg-body';
+        const body = document.getElementById(bodyId);
+        const header = document.querySelector(`[data-toggle="${bodyId}"]`);
+        if (body && header) {
+          body.style.display = 'block';
+          header.classList.add('expanded');
+        }
+
+      } catch (error) {
+        console.error('Generation error:', error);
+
+        // Show inline error
+        const errorEl = document.createElement('div');
+        errorEl.className = 'gen-error';
+        errorEl.textContent = error.message;
+        btn.parentElement.appendChild(errorEl);
+
+        // Re-enable button
+        btn.disabled = false;
+        btn.textContent = `Generate ${contentType === 'coverLetter' ? 'Cover Letter' : 'Recruiter Message'}`;
+        btn.classList.remove('loading');
+      }
+    });
+  });
+
+  // Content textarea input handlers (auto-save + auto-resize)
+  const contentTextareas = modalBody.querySelectorAll('.content-textarea');
+  contentTextareas.forEach(textarea => {
+    // Initial auto-resize
+    autoResizeTextarea(textarea);
+
+    textarea.addEventListener('input', (e) => {
+      const contentType = e.target.dataset.contentType;
+      const jobId = e.target.dataset.jobId;
+      const newContent = e.target.value;
+
+      // Auto-resize
+      autoResizeTextarea(e.target);
+
+      // Debounced save
+      pendingContentJobId = jobId;
+      const currentGenerated = currentJobs[currentIndex].generated || {};
+      pendingContentUpdate = {
+        ...currentGenerated,
+        [contentType]: {
+          ...(currentGenerated[contentType] || {}),
+          content: newContent,
+          editedAt: new Date().toISOString(),
+          isEdited: true
+        }
+      };
+
+      if (contentSaveTimeout) clearTimeout(contentSaveTimeout);
+      contentSaveTimeout = setTimeout(async () => {
+        await storage.updateJob(pendingContentJobId, { generated: pendingContentUpdate });
+
+        // Update in-memory job object
+        currentJobs[currentIndex].generated = pendingContentUpdate;
+
+        // Update status label
+        const statusEl = document.getElementById(contentType === 'coverLetter' ? 'cl-status' : 'rm-status');
+        if (statusEl) statusEl.textContent = 'Edited';
+
+        pendingContentJobId = null;
+        pendingContentUpdate = null;
+      }, 1000);
+    });
+  });
+
+  // Copy button click handlers
+  const copyBtns = modalBody.querySelectorAll('.btn-copy');
+  copyBtns.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const contentType = e.target.dataset.contentType;
+      const textarea = e.target.parentElement.parentElement.querySelector('.content-textarea');
+
+      if (textarea) {
+        const content = textarea.value;
+
+        try {
+          await navigator.clipboard.writeText(content);
+
+          // Show success feedback
+          const originalText = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.classList.add('success');
+
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('success');
+          }, 2000);
+
+        } catch (error) {
+          console.error('Copy failed:', error);
+
+          // Show error feedback
+          const originalText = btn.textContent;
+          btn.textContent = 'Copy failed';
+          btn.classList.add('error');
+
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.classList.remove('error');
+          }, 2000);
+        }
+      }
+    });
+  });
+
+  // Regenerate button click handlers
+  const regenerateBtns = modalBody.querySelectorAll('.btn-regenerate');
+  regenerateBtns.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const contentType = e.target.dataset.contentType;
+      const jobId = e.target.dataset.jobId;
+
+      // Check if content is edited
+      const job = currentJobs[currentIndex];
+      const isEdited = job.generated?.[contentType]?.isEdited;
+
+      if (isEdited) {
+        const confirmed = confirm('You have edited this content. Regenerate anyway?');
+        if (!confirmed) return;
+      }
+
+      // Get custom instructions
+      const customInstructions = document.getElementById('custom-instructions')?.value || '';
+
+      // Disable button and show loading state
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = 'Generating...';
+
+      try {
+        // Send message to background
+        const response = await chrome.runtime.sendMessage({
+          type: 'GENERATE_CONTENT',
+          contentType,
+          jobId,
+          customInstructions
+        });
+
+        if (!response.success) {
+          throw new Error(response.error || 'Regeneration failed');
+        }
+
+        // Update currentJobs with new generated data
+        const jobs = await storage.getJobs();
+        currentJobs[currentIndex] = jobs[jobId];
+
+        // Re-render modal content
+        renderModalContent(currentJobs[currentIndex]);
+
+        // Update navigation state
+        updateNavigation();
+
+      } catch (error) {
+        console.error('Regeneration error:', error);
+        alert(`Regeneration failed: ${error.message}`);
+
+        // Re-enable button
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
+    });
+  });
 
   // Notes textarea handler
   const textarea = modalBody.querySelector('#modal-notes');
@@ -385,4 +667,81 @@ function getScoreClass(score) {
   if (score >= 80) return 'high';
   if (score >= 60) return 'medium';
   return 'low';
+}
+
+/**
+ * Render generate button HTML
+ * @param {string} contentType - 'coverLetter' or 'recruiterMessage'
+ * @param {string} jobId - Job ID
+ * @returns {string} HTML string
+ */
+function renderGenerateButton(contentType, jobId) {
+  const label = contentType === 'coverLetter' ? 'Cover Letter' : 'Recruiter Message';
+  return `<button class="btn-generate" data-content-type="${contentType}" data-job-id="${jobId}">Generate ${label}</button>`;
+}
+
+/**
+ * Render content area with textarea and actions
+ * @param {string} contentType - 'coverLetter' or 'recruiterMessage'
+ * @param {Object} job - Job object
+ * @returns {string} HTML string
+ */
+function renderContentArea(contentType, job) {
+  const content = job.generated?.[contentType]?.content || '';
+  const meta = job.generated?.[contentType];
+
+  return `
+    <textarea class="content-textarea" data-content-type="${contentType}" data-job-id="${job.jobId}">${escapeHtml(content)}</textarea>
+    <div class="content-actions">
+      <button class="btn-copy" data-content-type="${contentType}">Copy</button>
+      <button class="btn-regenerate" data-content-type="${contentType}" data-job-id="${job.jobId}">Regenerate</button>
+      <span class="content-meta">${meta ? formatContentMeta(meta) : ''}</span>
+    </div>
+  `;
+}
+
+/**
+ * Format content metadata for display
+ * @param {Object} contentObj - Content object with generatedAt, editedAt, isEdited
+ * @returns {string} Formatted metadata string
+ */
+function formatContentMeta(contentObj) {
+  if (contentObj.isEdited && contentObj.editedAt) {
+    return `Edited ${formatRelativeTime(contentObj.editedAt)}`;
+  }
+  if (contentObj.generatedAt) {
+    return `Generated ${formatRelativeTime(contentObj.generatedAt)}`;
+  }
+  return '';
+}
+
+/**
+ * Format relative time for content metadata
+ * @param {string} isoString - ISO timestamp
+ * @returns {string} Relative time string
+ */
+function formatRelativeTime(isoString) {
+  const now = new Date();
+  const date = new Date(isoString);
+  const seconds = Math.floor((now - date) / 1000);
+
+  if (seconds < 60) return 'just now';
+  if (seconds < 300) return `${Math.floor(seconds / 60)} min ago`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+  if (seconds < 86400) return 'today';
+  if (seconds < 172800) return 'yesterday';
+
+  const days = Math.floor(seconds / 86400);
+  if (days < 7) return `${days} days ago`;
+
+  return date.toLocaleDateString();
+}
+
+/**
+ * Auto-resize textarea to fit content
+ * @param {HTMLTextAreaElement} textarea - Textarea element
+ */
+function autoResizeTextarea(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
 }
