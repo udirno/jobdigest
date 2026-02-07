@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 ## Current Position
 
 Phase: 6 of 8 (Application Tracking)
-Plan: 1 of 2
-Status: In progress
-Last activity: 2026-02-07 — Completed 06-01-PLAN.md
+Plan: 2 of 2
+Status: Phase complete
+Last activity: 2026-02-07 — Completed 06-02-PLAN.md
 
-Progress: [████████░░] 66.7%
+Progress: [████████░░] 70.8%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: 7 minutes
-- Total execution time: 1.8 hours
+- Total plans completed: 16
+- Average duration: 8 minutes
+- Total execution time: 2.2 hours
 
 **By Phase:**
 
@@ -32,11 +32,11 @@ Progress: [████████░░] 66.7%
 | 03 | 4 | 90min | 23min |
 | 04 | 2 | 4min | 2min |
 | 05 | 2 | 8min | 4min |
-| 06 | 1 | 2min | 2min |
+| 06 | 2 | 23min | 12min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (2min), 04-02 (2min), 05-01 (3min), 05-02 (5min), 06-01 (2min)
-- Trend: Phase 6 started with fast execution. Dismiss functionality and hidden job filtering complete
+- Last 5 plans: 04-02 (2min), 05-01 (3min), 05-02 (5min), 06-01 (2min), 06-02 (21min)
+- Trend: Phase 6 complete. Application tracking features (dismiss, notes, dates) implemented with UX refinements
 
 *Updated after each plan completion*
 
@@ -167,6 +167,13 @@ Recent decisions affecting current work:
 - showHidden state: Module-level variable in filters.js controls visibility of dismissed and passed jobs across all filters
 - Note indicator minimal design: Pencil character (&#9998;) only shown when job.notes field exists
 
+**From 06-02 execution:**
+- Notes auto-save debounce: 1-second delay balances UX responsiveness with storage write frequency, module-level pending state tracks saveTimeout/pendingJobId/pendingNotes
+- Flush-on-close pattern: Modal close handler checks for pending debounced save and flushes immediately to prevent data loss
+- Application date preservation: Date picker defaults to today only when no prior applicationDate exists; existing dates preserved when toggling status away from and back to Applied
+- Auto-scroll on status change: Modal scrolls to bottom when status changes to Applied to ensure date picker visibility in smaller viewports
+- Character counter warning: Shows warning color at <100 characters remaining (not at limit) for advance notice
+
 ### Pending Todos
 
 None yet.
@@ -188,8 +195,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-07T00:11:11 UTC
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-02-07T00:29:46 UTC
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None
 
-**Phase 6 plan 1 complete (1/2 plans):** Dismiss functionality with undo toast on job cards. Each card has dismiss button (×) in footer that marks job as dismissed, removes from view, and shows "Job hidden" toast with 5-second auto-dismiss and Undo button. "Show hidden" checkbox in toolbar reveals dismissed jobs and jobs with "passed" status (which are auto-hidden from "All" filter). Note indicator (pencil icon) appears on cards when job.notes field exists. storage.updateJob(jobId, updates) convenience method added for partial field updates. Toast notification pattern established with ARIA attributes and focus management for accessibility. Ready for plan 2 to add notes editing, application date tracking, and modal enhancements.
+**Phase 6 complete (2/2 plans):** Application tracking features fully implemented. Plan 01 added dismiss functionality with undo toast on job cards, hidden job filtering for dismissed/passed status, "Show hidden" toggle, note indicators, and storage.updateJob() convenience method. Plan 02 added notes textarea with 2000-char limit and debounced auto-save, application date picker conditionally shown for Applied status, status dropdown in modal syncing to cards, dismiss from modal with undo toast, flush-on-close for pending saves, and auto-scroll fix for date picker visibility. All tracking data persists in chrome.storage.local. Ready for Phase 7 or future enhancements.
