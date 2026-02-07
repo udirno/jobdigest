@@ -992,6 +992,109 @@ body {
   word-break: break-word;
 }
 
+/* Notes section in modal */
+.notes-section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--bg-secondary);
+}
+.notes-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.modal-notes-textarea {
+  width: 100%;
+  min-height: 80px;
+  max-height: 160px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+.modal-notes-textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.modal-notes-textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Character counter */
+.char-counter {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: right;
+  margin-top: 4px;
+}
+.char-counter.warning {
+  color: var(--error);
+}
+
+/* Application date section */
+.app-date-section {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.app-date-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.modal-date-input {
+  background: var(--bg-secondary);
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  color-scheme: dark;
+}
+.modal-date-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Modal status dropdown */
+.modal-status-dropdown {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.modal-status-dropdown:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Dismiss button in modal footer */
+.btn-modal-dismiss {
+  background: none;
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-modal-dismiss:hover {
+  background: var(--error);
+  color: white;
+}
+
 /* Score tooltip on card */
 .score-badge {
   position: relative;

@@ -208,7 +208,7 @@ async function dismissJob(jobId) {
  * @param {string} message - Message to display
  * @param {Function} undoCallback - Function to call when undo is clicked
  */
-function showUndoToast(message, undoCallback) {
+export function showUndoToast(message, undoCallback) {
   // Create toast element
   const toast = document.createElement('div');
   toast.className = 'toast';

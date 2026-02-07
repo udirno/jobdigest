@@ -3,13 +3,19 @@
  * Handles modal display, navigation, and score breakdown
  */
 
-import { getFilteredAndSortedJobs } from './filters.js';
-import { escapeHtml, formatRelativeDate, formatSalary } from './job-card.js';
+import { getFilteredAndSortedJobs, renderJobGrid } from './filters.js';
+import { escapeHtml, formatRelativeDate, formatSalary, showUndoToast } from './job-card.js';
+import { storage } from '../storage.js';
 
 // Module state
 let currentJobs = [];
 let currentIndex = 0;
-let modal, modalBody, prevBtn, nextBtn, counterEl, viewOriginalLink;
+let modal, modalBody, prevBtn, nextBtn, counterEl, viewOriginalLink, dismissBtn;
+
+// Debounce state for notes auto-save
+let saveTimeout = null;
+let pendingJobId = null;
+let pendingNotes = null;
 
 /**
  * Initialize job modal
@@ -23,6 +29,7 @@ export function initJobModal() {
   nextBtn = document.getElementById('next-job');
   counterEl = document.getElementById('modal-counter');
   viewOriginalLink = document.getElementById('modal-view-original');
+  dismissBtn = document.getElementById('modal-dismiss');
 
   if (!modal || !modalBody) {
     console.warn('Modal elements not found in DOM');
@@ -32,6 +39,27 @@ export function initJobModal() {
   // Attach navigation listeners
   prevBtn.addEventListener('click', handlePrevious);
   nextBtn.addEventListener('click', handleNext);
+
+  // Attach dismiss handler
+  dismissBtn.addEventListener('click', async () => {
+    const job = currentJobs[currentIndex];
+    if (!job) return;
+
+    // Dismiss the job
+    await storage.updateJob(job.jobId, { dismissed: true });
+
+    // Close modal
+    modal.close();
+
+    // Refresh grid
+    await renderJobGrid();
+
+    // Show undo toast
+    showUndoToast('Job hidden', async () => {
+      await storage.updateJob(job.jobId, { dismissed: false });
+      await renderJobGrid();
+    });
+  });
 
   // Keyboard navigation in modal
   modal.addEventListener('keydown', (e) => {
@@ -45,7 +73,17 @@ export function initJobModal() {
   });
 
   // Clean up on close
-  modal.addEventListener('close', () => {
+  modal.addEventListener('close', async () => {
+    // Flush pending notes save
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+      saveTimeout = null;
+    }
+    if (pendingJobId && pendingNotes !== null) {
+      await storage.updateJob(pendingJobId, { notes: pendingNotes });
+      pendingJobId = null;
+      pendingNotes = null;
+    }
     currentJobs = [];
     currentIndex = 0;
   });
@@ -97,6 +135,12 @@ function renderModalContent(job) {
       <span>${dateText}</span>
       ${salaryText ? `<span>${salaryText}</span>` : ''}
       <span class="source-badge">${job.source}</span>
+      <select class="modal-status-dropdown" data-job-id="${job.jobId}" aria-label="Job status">
+        <option value="new" ${job.status === 'new' ? 'selected' : ''}>New</option>
+        <option value="contacted" ${job.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+        <option value="applied" ${job.status === 'applied' ? 'selected' : ''}>Applied</option>
+        <option value="passed" ${job.status === 'passed' ? 'selected' : ''}>Passed</option>
+      </select>
     </div>
   `;
 
@@ -166,7 +210,116 @@ function renderModalContent(job) {
     </div>
   `;
 
+  // Notes section (always shown)
+  html += `
+    <div class="notes-section">
+      <h3 class="notes-section-title">Notes</h3>
+      <textarea
+        id="modal-notes"
+        class="modal-notes-textarea"
+        maxlength="2000"
+        placeholder="Add notes about this job..."
+        aria-describedby="notes-counter"
+        data-job-id="${job.jobId}"
+      >${escapeHtml(job.notes || '')}</textarea>
+      <div id="notes-counter" class="char-counter" aria-live="polite">
+        ${2000 - (job.notes || '').length} characters remaining
+      </div>
+    </div>
+  `;
+
+  // Application date section (shown only when status is 'applied')
+  if (job.status === 'applied') {
+    html += `
+      <div class="app-date-section">
+        <label for="modal-app-date" class="app-date-label">Application Date</label>
+        <input
+          type="date"
+          id="modal-app-date"
+          class="modal-date-input"
+          value="${job.applicationDate || new Date().toISOString().split('T')[0]}"
+          max="${new Date().toISOString().split('T')[0]}"
+          data-job-id="${job.jobId}"
+        >
+      </div>
+    `;
+  }
+
   modalBody.innerHTML = html;
+
+  // Attach event listeners after DOM is ready
+
+  // Notes textarea handler
+  const textarea = modalBody.querySelector('#modal-notes');
+  if (textarea) {
+    textarea.addEventListener('input', (e) => {
+      const notes = e.target.value;
+      const counter = modalBody.querySelector('#notes-counter');
+      if (counter) {
+        counter.textContent = `${2000 - notes.length} characters remaining`;
+        // Add warning class if under 100 chars remaining
+        if (2000 - notes.length < 100) {
+          counter.classList.add('warning');
+        } else {
+          counter.classList.remove('warning');
+        }
+      }
+
+      // Debounced save
+      pendingJobId = e.target.dataset.jobId;
+      pendingNotes = notes;
+      if (saveTimeout) clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(async () => {
+        await storage.updateJob(pendingJobId, { notes: pendingNotes });
+        pendingJobId = null;
+        pendingNotes = null;
+      }, 1000);
+    });
+  }
+
+  // Application date handler
+  const dateInput = modalBody.querySelector('#modal-app-date');
+  if (dateInput) {
+    dateInput.addEventListener('change', async (e) => {
+      const jobId = e.target.dataset.jobId;
+      const applicationDate = e.target.value;
+      await storage.updateJob(jobId, { applicationDate });
+      // Update current job object
+      currentJobs[currentIndex].applicationDate = applicationDate;
+    });
+  }
+
+  // Status dropdown handler
+  const statusDropdown = modalBody.querySelector('.modal-status-dropdown');
+  if (statusDropdown) {
+    statusDropdown.addEventListener('change', async (e) => {
+      const jobId = e.target.dataset.jobId;
+      const newStatus = e.target.value;
+
+      // Prepare update object
+      const updates = { status: newStatus };
+
+      // If changing to Applied and no applicationDate, set to today
+      if (newStatus === 'applied' && !currentJobs[currentIndex].applicationDate) {
+        updates.applicationDate = new Date().toISOString().split('T')[0];
+      }
+
+      // Save to storage
+      await storage.updateJob(jobId, updates);
+
+      // Update current job object
+      Object.assign(currentJobs[currentIndex], updates);
+
+      // Re-render modal content to show/hide date field
+      renderModalContent(currentJobs[currentIndex]);
+
+      // Update navigation state after re-render
+      updateNavigation();
+
+      // Refresh grid to update card status
+      await renderJobGrid();
+    });
+  }
 
   // Update view original link
   viewOriginalLink.href = job.url;
