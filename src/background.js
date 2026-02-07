@@ -4,6 +4,7 @@ import { keepAlive } from './keep-alive.js';
 import { scheduleDailyFetch, verifyAlarmExists, getNextFetchTime } from './scheduler.js';
 import { runJobFetch, resumeJobFetch } from './job-fetcher.js';
 import { scoreUnscoredJobs } from './job-scorer.js';
+import { generateContent } from './content-generator.js';
 
 /**
  * Service worker lifecycle management
@@ -238,6 +239,35 @@ async function handleMessage(message, sender) {
           ? Math.round(jobList.filter(j => j.score >= 0).reduce((sum, j) => sum + j.score, 0) / scored)
           : null
       };
+    }
+
+    case 'GENERATE_CONTENT': {
+      const { contentType, jobId, customInstructions } = message;
+      console.log(`Content generation requested: ${contentType} for job ${jobId}`);
+      try {
+        // Get job from storage
+        const jobs = await storage.getJobs();
+        const job = jobs[jobId];
+        if (!job) {
+          return { success: false, error: 'Job not found' };
+        }
+
+        // Get Claude API key
+        const apiKeys = await storage.getApiKeys();
+        if (!apiKeys.claude) {
+          return { success: false, error: 'Claude API key not configured. Please add it in Settings.' };
+        }
+
+        // Run generation with keep-alive (prevents service worker termination)
+        const result = await keepAlive.withKeepAlive('content-gen', async () => {
+          return await generateContent(contentType, job, apiKeys.claude, customInstructions || '');
+        });
+
+        return { success: true, content: result.content, usage: result.usage };
+      } catch (error) {
+        console.error('Content generation failed:', error);
+        return { success: false, error: error.message };
+      }
     }
 
     default:
