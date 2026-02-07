@@ -137,8 +137,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — Content generation engine with Claude API prompt engineering and background message handler
-- [ ] 07-02-PLAN.md — Modal UI with generate buttons, inline editing, copy-to-clipboard, and human verification
+- [x] 07-01-PLAN.md — Content generation engine with Claude API prompt engineering and background message handler
+- [x] 07-02-PLAN.md — Modal UI with generate buttons, inline editing, copy-to-clipboard, and human verification
 
 ### Phase 8: Export & Polish
 **Goal**: Users export application data to CSV and monitor storage usage with warning system
@@ -149,10 +149,11 @@ Plans:
   2. CSV export includes job metadata (title, company, location, score, status, application date, notes)
   3. CSV export includes generated content (cover letters and recruiter messages)
   4. Extension monitors chrome.storage.local usage and warns user at 80% capacity
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: TBD during planning
+- [ ] 08-01-PLAN.md — CSV export module with RFC 4180 escaping and Export button in dashboard toolbar
+- [ ] 08-02-PLAN.md — Storage usage monitoring with warning banner and settings display
 
 ## Progress
 
@@ -168,8 +169,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 5. Dashboard & UI | 2/2 | Complete | 2026-02-06 |
 | 6. Application Tracking | 2/2 | Complete | 2026-02-07 |
 | 7. AI Content Generation | 2/2 | Complete | 2026-02-07 |
-| 8. Export & Polish | 0/TBD | Not started | - |
+| 8. Export & Polish | 0/2 | Not started | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-07* (Phase 7 complete)
+*Last updated: 2026-02-07* (Phase 8 planned)
