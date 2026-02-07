@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 ## Current Position
 
 Phase: 7 of 8 (AI Content Generation)
-Plan: 1 of 3
+Plan: 2 of 3
 Status: In progress
-Last activity: 2026-02-07 — Completed 07-01-PLAN.md
+Last activity: 2026-02-07 — Completed 07-02-PLAN.md
 
-Progress: [████████░░] 75.0%
+Progress: [████████░░] 79.2%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: 7 minutes
-- Total execution time: 2.3 hours
+- Total execution time: 2.4 hours
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Progress: [████████░░] 75.0%
 | 04 | 2 | 4min | 2min |
 | 05 | 2 | 8min | 4min |
 | 06 | 2 | 23min | 12min |
-| 07 | 1 | 2min | 2min |
+| 07 | 2 | 10min | 5min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (3min), 05-02 (5min), 06-01 (2min), 06-02 (21min), 07-01 (2min)
-- Trend: Phase 7 started. Content generation engine foundation complete with Claude API integration
+- Last 5 plans: 05-02 (5min), 06-01 (2min), 06-02 (21min), 07-01 (2min), 07-02 (8min)
+- Trend: Phase 7 progressing. Content generation UI complete with expandable sections and editing
 
 *Updated after each plan completion*
 
@@ -186,6 +186,16 @@ Recent decisions affecting current work:
 - Keep-alive tag: 'content-gen' tag distinct from 'ai-scoring' and 'job-fetch' for service worker lifecycle management
 - Message handler: GENERATE_CONTENT validates job exists and API key configured before generation
 
+**From 07-02 execution:**
+- Expandable sections: One section per content type (cover letter, recruiter message) chosen over tabbed interface for better discoverability at a glance
+- Separate generate buttons: Each content type has dedicated button instead of combined dropdown for clearer affordance and simpler one-click interaction
+- Per-job custom instructions: Text input in modal (not global settings) allows job-specific emphasis without new settings section
+- Auto-expand after generation: Section automatically expands when generation completes for immediate content visibility
+- Content auto-save: 1-second debounced auto-save for edited content (same pattern as notes) with separate state tracking and flush-on-close
+- Regenerate confirmation: Confirm dialog before regenerating edited content to prevent accidental overwrites of user customizations
+- Relative time metadata: Shows "Generated 5 min ago" or "Edited today" instead of ISO timestamps for user-friendly display
+- Auto-resize textareas: Dynamically adjust height based on scrollHeight so all content visible without manual resize or scrollbars
+
 ### Pending Todos
 
 None yet.
@@ -207,8 +217,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-07T20:47:07 UTC
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-02-07T21:40:00 UTC
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None
 
-**Phase 7 Plan 01 complete (1/3 plans):** Content generation engine foundation implemented. Created content-generator.js module with generateContent() function that calls Claude Haiku 4.5 API using prompt caching (system + resume) for cost efficiency. Includes anti-cliche constraints (14 banned phrases) and professional-but-conversational tone guidance. Background service worker now handles GENERATE_CONTENT messages with job validation, API key check, and keep-alive wrapper. Generated content automatically saved to job records with metadata (generatedAt, isEdited, editedAt). clipboardWrite permission added to manifest for copy functionality. Ready for Plan 02 (UI integration with generate buttons, edit modals, copy buttons).
+**Phase 7 Plan 02 complete (2/3 plans):** Content generation UI integrated into job detail modal. Added expandable sections for cover letter and recruiter message with generate buttons, custom instructions input, editable textareas with auto-resize and debounced auto-save, copy-to-clipboard with visual feedback, and smart regeneration with edit protection. Generated content persists across modal opens with metadata tracking (Generated/Edited timestamps). Users can now generate, edit, and copy personalized content directly from any job modal. Ready for Phase 7 Plan 03 (if planned) or Phase 8.
