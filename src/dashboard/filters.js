@@ -10,6 +10,7 @@ import { updateEmptyState } from './empty-state.js';
 // Filter and sort state
 let currentFilter = 'all';
 let currentSort = 'score';
+let showHidden = false;
 
 /**
  * Initialize dashboard controls (filter and sort dropdowns)
@@ -18,6 +19,7 @@ let currentSort = 'score';
 export function initDashboardControls() {
   const filterDropdown = document.getElementById('filter-status');
   const sortDropdown = document.getElementById('sort-by');
+  const showHiddenCheckbox = document.getElementById('show-hidden');
 
   if (!filterDropdown || !sortDropdown) {
     console.warn('Dashboard controls not found in DOM');
@@ -36,6 +38,14 @@ export function initDashboardControls() {
     renderJobGrid();
   });
 
+  // Show hidden checkbox handler
+  if (showHiddenCheckbox) {
+    showHiddenCheckbox.addEventListener('change', (e) => {
+      showHidden = e.target.checked;
+      renderJobGrid();
+    });
+  }
+
   // Set default values
   filterDropdown.value = currentFilter;
   sortDropdown.value = currentSort;
@@ -50,9 +60,19 @@ export function getFilteredAndSortedJobs() {
     const jobsMap = await storage.getJobs();
     let jobs = Object.values(jobsMap);
 
-    // Apply filter
+    // Filter out dismissed jobs unless showHidden is true
+    if (!showHidden) {
+      jobs = jobs.filter(job => job.dismissed !== true);
+    }
+
+    // Apply status filter
     if (currentFilter !== 'all') {
       jobs = jobs.filter(job => job.status === currentFilter);
+    } else {
+      // When on "all" filter, also hide passed jobs unless showHidden is true
+      if (!showHidden) {
+        jobs = jobs.filter(job => job.status !== 'passed');
+      }
     }
 
     // Apply sort
@@ -169,4 +189,21 @@ export function getCurrentFilter() {
  */
 export function getCurrentSort() {
   return currentSort;
+}
+
+/**
+ * Set show hidden state and re-render
+ * @param {boolean} value - Whether to show hidden jobs
+ */
+export function setShowHidden(value) {
+  showHidden = value;
+  renderJobGrid();
+}
+
+/**
+ * Get show hidden state
+ * @returns {boolean} Current show hidden state
+ */
+export function getShowHidden() {
+  return showHidden;
 }

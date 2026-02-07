@@ -292,5 +292,19 @@ export const storage = {
    */
   async setAdaptiveMetrics(metrics) {
     await this.set(STORAGE_KEYS.ADAPTIVE_METRICS, metrics);
+  },
+
+  /**
+   * Update individual job fields (convenience method)
+   * @param {string} jobId - Job ID
+   * @param {Object} updates - Fields to update (e.g., { notes: '...', dismissed: true })
+   * @returns {Promise<Object|null>} Updated job object or null if job not found
+   */
+  async updateJob(jobId, updates) {
+    const jobs = await this.getJobs();
+    if (!jobs[jobId]) return null;
+    Object.assign(jobs[jobId], updates);
+    await this.set(STORAGE_KEYS.JOBS, jobs);
+    return jobs[jobId];
   }
 };
