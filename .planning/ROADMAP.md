@@ -121,8 +121,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Dismiss with undo toast, hidden jobs filter, note indicator, storage extensions
-- [ ] 06-02-PLAN.md — Modal notes with auto-save, application date picker, modal dismiss, human verification
+- [x] 06-01-PLAN.md — Dismiss with undo toast, hidden jobs filter, note indicator, storage extensions
+- [x] 06-02-PLAN.md — Modal notes with auto-save, application date picker, modal dismiss, human verification
 
 ### Phase 7: AI Content Generation
 **Goal**: Users generate personalized cover letters and recruiter messages for specific jobs using Claude API
@@ -134,10 +134,11 @@ Plans:
   3. Generated cover letters reference both resume skills and job description requirements
   4. Generated recruiter messages reference both resume experience and job description
   5. Generated content saves with job record for future reference
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: TBD during planning
+- [ ] 07-01-PLAN.md — Content generation engine with Claude API prompt engineering and background message handler
+- [ ] 07-02-PLAN.md — Modal UI with generate buttons, inline editing, copy-to-clipboard, and human verification
 
 ### Phase 8: Export & Polish
 **Goal**: Users export application data to CSV and monitor storage usage with warning system
@@ -166,9 +167,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 4. AI Scoring | 2/2 | Complete | 2026-02-05 |
 | 5. Dashboard & UI | 2/2 | Complete | 2026-02-06 |
 | 6. Application Tracking | 2/2 | Complete | 2026-02-07 |
-| 7. AI Content Generation | 0/TBD | Not started | - |
+| 7. AI Content Generation | 0/2 | Not started | - |
 | 8. Export & Polish | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-05*
-*Last updated: 2026-02-07* (Phase 6 complete)
+*Last updated: 2026-02-07* (Phase 7 planned)
