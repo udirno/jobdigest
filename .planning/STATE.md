@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-05)
 
 **Core value:** Eliminate 2+ hours per day of manual job browsing by auto-fetching, AI-scoring, and tracking jobs with intelligent filtering that surfaces only high-quality matches.
-**Current focus:** Phase 6 - Application Tracking (complete)
+**Current focus:** Phase 7 - AI Content Generation (in progress)
 
 ## Current Position
 
-Phase: 6 of 8 (Application Tracking)
-Plan: 2 of 2
-Status: Phase complete
-Last activity: 2026-02-07 — Completed 06-02-PLAN.md
+Phase: 7 of 8 (AI Content Generation)
+Plan: 1 of 3
+Status: In progress
+Last activity: 2026-02-07 — Completed 07-01-PLAN.md
 
-Progress: [████████░░] 70.8%
+Progress: [████████░░] 75.0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: 8 minutes
-- Total execution time: 2.2 hours
+- Total plans completed: 17
+- Average duration: 7 minutes
+- Total execution time: 2.3 hours
 
 **By Phase:**
 
@@ -33,10 +33,11 @@ Progress: [████████░░] 70.8%
 | 04 | 2 | 4min | 2min |
 | 05 | 2 | 8min | 4min |
 | 06 | 2 | 23min | 12min |
+| 07 | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (2min), 05-01 (3min), 05-02 (5min), 06-01 (2min), 06-02 (21min)
-- Trend: Phase 6 complete. Application tracking features (dismiss, notes, dates) implemented with UX refinements
+- Last 5 plans: 05-01 (3min), 05-02 (5min), 06-01 (2min), 06-02 (21min), 07-01 (2min)
+- Trend: Phase 7 started. Content generation engine foundation complete with Claude API integration
 
 *Updated after each plan completion*
 
@@ -174,6 +175,17 @@ Recent decisions affecting current work:
 - Auto-scroll on status change: Modal scrolls to bottom when status changes to Applied to ensure date picker visibility in smaller viewports
 - Character counter warning: Shows warning color at <100 characters remaining (not at limit) for advance notice
 
+**From 07-01 execution:**
+- Content generation model: claude-haiku-4-5 chosen for cost-effectiveness ($1/$5 per MTok vs Sonnet $3/$15) while maintaining quality
+- Prompt caching strategy: System prompt + resume cached with ephemeral cache_control for ~90% cost reduction on repeat generations
+- Anti-cliche engineering: 14 banned phrases ("I am excited to apply", "leverage my skills", "proven track record") prevent robotic AI language
+- Tone guidance: Professional-but-conversational with "write like emailing a colleague" instruction
+- Token optimization: extractKeyRequirements caps job descriptions at 1000 chars, focusing on requirements/skills/responsibilities
+- Different max_tokens: 800 for cover letters (3-4 paragraphs), 200 for recruiter messages (<100 words)
+- Metadata tracking: Generated content saved with generatedAt, editedAt, isEdited to distinguish AI vs user edits
+- Keep-alive tag: 'content-gen' tag distinct from 'ai-scoring' and 'job-fetch' for service worker lifecycle management
+- Message handler: GENERATE_CONTENT validates job exists and API key configured before generation
+
 ### Pending Todos
 
 None yet.
@@ -195,8 +207,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-07T00:29:46 UTC
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-02-07T20:47:07 UTC
+Stopped at: Completed 07-01-PLAN.md
 Resume file: None
 
-**Phase 6 complete (2/2 plans):** Application tracking features fully implemented. Plan 01 added dismiss functionality with undo toast on job cards, hidden job filtering for dismissed/passed status, "Show hidden" toggle, note indicators, and storage.updateJob() convenience method. Plan 02 added notes textarea with 2000-char limit and debounced auto-save, application date picker conditionally shown for Applied status, status dropdown in modal syncing to cards, dismiss from modal with undo toast, flush-on-close for pending saves, and auto-scroll fix for date picker visibility. All tracking data persists in chrome.storage.local. Ready for Phase 7 or future enhancements.
+**Phase 7 Plan 01 complete (1/3 plans):** Content generation engine foundation implemented. Created content-generator.js module with generateContent() function that calls Claude Haiku 4.5 API using prompt caching (system + resume) for cost efficiency. Includes anti-cliche constraints (14 banned phrases) and professional-but-conversational tone guidance. Background service worker now handles GENERATE_CONTENT messages with job validation, API key check, and keep-alive wrapper. Generated content automatically saved to job records with metadata (generatedAt, isEdited, editedAt). clipboardWrite permission added to manifest for copy functionality. Ready for Plan 02 (UI integration with generate buttons, edit modals, copy buttons).
