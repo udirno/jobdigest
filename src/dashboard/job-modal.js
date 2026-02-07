@@ -316,6 +316,14 @@ function renderModalContent(job) {
       // Update navigation state after re-render
       updateNavigation();
 
+      // Scroll to date picker if status changed to "applied"
+      if (newStatus === 'applied') {
+        const dateInput = modalBody.querySelector('#modal-app-date');
+        if (dateInput) {
+          dateInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
       // Refresh grid to update card status
       await renderJobGrid();
     });
