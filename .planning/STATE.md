@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 
 ## Current Position
 
-Phase: 5 of 8 (Dashboard & UI)
-Plan: 2 of 2
-Status: Phase complete
-Last activity: 2026-02-06 — Completed Phase 5 (Dashboard & UI)
+Phase: 6 of 8 (Application Tracking)
+Plan: 1 of 2
+Status: In progress
+Last activity: 2026-02-07 — Completed 06-01-PLAN.md
 
-Progress: [████████░░] 62.5%
+Progress: [████████░░] 66.7%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
-- Average duration: 8 minutes
-- Total execution time: 1.7 hours
+- Total plans completed: 15
+- Average duration: 7 minutes
+- Total execution time: 1.8 hours
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Progress: [████████░░] 62.5%
 | 03 | 4 | 90min | 23min |
 | 04 | 2 | 4min | 2min |
 | 05 | 2 | 8min | 4min |
+| 06 | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 03-04 (85min), 04-01 (2min), 04-02 (2min), 05-01 (3min), 05-02 (5min)
-- Trend: Phase 5 completed with 3 UX fixes during execution. Dashboard UI functional and user-tested
+- Last 5 plans: 04-01 (2min), 04-02 (2min), 05-01 (3min), 05-02 (5min), 06-01 (2min)
+- Trend: Phase 6 started with fast execution. Dismiss functionality and hidden job filtering complete
 
 *Updated after each plan completion*
 
@@ -159,6 +160,13 @@ Recent decisions affecting current work:
 - Dialog visibility fix: Moved display:flex to [open] selector to prevent modal showing on page load
 - API key preservation: Reset settings restores search preferences but preserves configured API keys
 
+**From 06-01 execution:**
+- Passed status auto-hidden from default view: When filter is "All", jobs with status "passed" are automatically hidden unless "Show hidden" is checked (treats Passed like dismiss)
+- storage.updateJob() convenience method: Partial field updates without full read-modify-write pattern, returns updated job or null if not found
+- Toast notification pattern: Auto-dismisses after 5 seconds, pauses timer on focus/blur for accessibility, ARIA attributes for screen readers
+- showHidden state: Module-level variable in filters.js controls visibility of dismissed and passed jobs across all filters
+- Note indicator minimal design: Pencil character (&#9998;) only shown when job.notes field exists
+
 ### Pending Todos
 
 None yet.
@@ -180,8 +188,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-06T22:00:00 UTC
-Stopped at: Completed Phase 5 (Dashboard & UI)
+Last session: 2026-02-07T00:11:11 UTC
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None
 
-**Phase 5 complete (2/2 plans):** Card-based dashboard with 780px wide popup displaying scored jobs in responsive 1-3 column grid. Jobs show color-coded score badges (green/amber/red), title, company, location, posted date, salary, and smart description previews extracting key requirements. Filter by status (All/New/Contacted/Applied/Passed) and sort by score/date/company/title with default highest-score-first ordering. Click cards to open detail modal showing full description, overall score, AI reasoning, and 5-dimension breakdown (skills match, experience level, tech stack, title relevance, industry fit) with colored progress bars. Modal navigation via Previous/Next buttons or arrow keys. Score tooltips explain calculation on hover/focus. Data management in settings: clear all jobs, clear scores only, or reset search preferences while preserving API keys. Status dropdowns on cards persist changes immediately. Context-aware empty states guide users to fetch jobs or adjust filters. All 8 Phase 5 requirements (DASH-01 through DASH-07, CONFIG-09) verified complete. Ready for Phase 6 (Application Tracking).
+**Phase 6 plan 1 complete (1/2 plans):** Dismiss functionality with undo toast on job cards. Each card has dismiss button (×) in footer that marks job as dismissed, removes from view, and shows "Job hidden" toast with 5-second auto-dismiss and Undo button. "Show hidden" checkbox in toolbar reveals dismissed jobs and jobs with "passed" status (which are auto-hidden from "All" filter). Note indicator (pencil icon) appears on cards when job.notes field exists. storage.updateJob(jobId, updates) convenience method added for partial field updates. Toast notification pattern established with ARIA attributes and focus management for accessibility. Ready for plan 2 to add notes editing, application date tracking, and modal enhancements.
