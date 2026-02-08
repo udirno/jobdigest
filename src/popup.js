@@ -1,6 +1,7 @@
 import { initSettings } from './settings.js';
 import { initDashboardControls, renderJobGrid } from './dashboard/filters.js';
 import { initJobModal, openJobModal } from './dashboard/job-modal.js';
+import { exportJobs } from './csv-exporter.js';
 
 // DOM elements
 let settingsBtn, closeSettingsBtn, settingsPanel, mainView;
@@ -51,6 +52,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (emptyStateBtn) {
     emptyStateBtn.addEventListener('click', openSettings);
   }
+
+  // Add export button handler
+  const exportBtn = document.getElementById('export-btn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', handleExport);
+  }
 });
 
 /**
@@ -69,4 +76,41 @@ async function closeSettings() {
 
   // Refresh dashboard to show any newly fetched jobs
   await renderJobGrid();
+}
+
+/**
+ * Handle export button click
+ */
+async function handleExport() {
+  const exportBtn = document.getElementById('export-btn');
+  const originalText = exportBtn.textContent;
+
+  // Disable button and show loading state
+  exportBtn.disabled = true;
+  exportBtn.textContent = 'Exporting...';
+
+  try {
+    await exportJobs();
+
+    // Show success feedback
+    exportBtn.textContent = 'Exported!';
+    setTimeout(() => {
+      exportBtn.textContent = originalText;
+      exportBtn.disabled = false;
+    }, 1500);
+  } catch (error) {
+    // Handle error
+    if (error.message.includes('No jobs')) {
+      exportBtn.textContent = 'No jobs to export';
+    } else {
+      exportBtn.textContent = 'Export failed';
+      console.error('Export error:', error);
+    }
+
+    // Restore button after showing error
+    setTimeout(() => {
+      exportBtn.textContent = originalText;
+      exportBtn.disabled = false;
+    }, 2000);
+  }
 }
