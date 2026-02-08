@@ -306,5 +306,45 @@ export const storage = {
     Object.assign(jobs[jobId], updates);
     await this.set(STORAGE_KEYS.JOBS, jobs);
     return jobs[jobId];
+  },
+
+  /**
+   * Get storage usage statistics
+   * @returns {Promise<Object>} Storage usage stats with warning flags
+   */
+  async getStorageUsage() {
+    try {
+      // Conservative 10MB quota (even with unlimitedStorage permission, warn early)
+      const QUOTA_BYTES = 10 * 1024 * 1024; // 10MB
+
+      // Get total bytes used across all storage keys
+      const bytesInUse = await chrome.storage.local.getBytesInUse(null);
+
+      // Calculate usage statistics
+      const percentUsed = Math.round((bytesInUse / QUOTA_BYTES) * 100);
+      const megabytesUsed = (bytesInUse / (1024 * 1024)).toFixed(2);
+
+      return {
+        bytesInUse,
+        quotaBytes: QUOTA_BYTES,
+        megabytesUsed,
+        megabytesQuota: '10.00',
+        percentUsed,
+        shouldWarn: percentUsed >= 80,
+        isCritical: percentUsed >= 95
+      };
+    } catch (error) {
+      // Storage monitoring should never crash the app
+      console.error('Storage usage check error:', error);
+      return {
+        bytesInUse: 0,
+        quotaBytes: 10 * 1024 * 1024,
+        megabytesUsed: '0.00',
+        megabytesQuota: '10.00',
+        percentUsed: 0,
+        shouldWarn: false,
+        isCritical: false
+      };
+    }
   }
 };
