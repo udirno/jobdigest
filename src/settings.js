@@ -237,6 +237,20 @@ export async function initSettings(container) {
 
       <div class="status-indicator" id="data-mgmt-status"></div>
     </div>
+
+    <!-- Storage Usage Section -->
+    <div class="settings-section">
+      <h3 class="section-title">Storage Usage</h3>
+      <p class="section-description">Monitor your extension's storage consumption.</p>
+
+      <div id="storage-usage-display" class="storage-usage-display">
+        <div class="usage-text" id="storage-usage-text">Loading...</div>
+        <div class="usage-bar-container">
+          <div class="usage-bar" id="storage-usage-bar"></div>
+        </div>
+        <div class="usage-warning" id="storage-usage-warning"></div>
+      </div>
+    </div>
   `;
 
   // Populate hour options (0-23)
@@ -267,6 +281,9 @@ export async function initSettings(container) {
 
   // Load fetch status
   await loadFetchStatus();
+
+  // Load storage usage
+  await loadStorageUsage();
 }
 
 /**
@@ -929,5 +946,52 @@ async function handleResetSettings() {
   } catch (error) {
     statusEl.className = 'status-indicator error';
     statusEl.textContent = 'Failed to reset settings';
+  }
+}
+
+/**
+ * Load and display storage usage
+ */
+async function loadStorageUsage() {
+  const usageTextEl = document.getElementById('storage-usage-text');
+  const usageBarEl = document.getElementById('storage-usage-bar');
+  const usageWarningEl = document.getElementById('storage-usage-warning');
+
+  if (!usageTextEl || !usageBarEl || !usageWarningEl) return;
+
+  try {
+    const usageStats = await storage.getStorageUsage();
+
+    // Update usage text
+    usageTextEl.textContent = `${usageStats.megabytesUsed}MB of ${usageStats.megabytesQuota}MB used (${usageStats.percentUsed}%)`;
+
+    // Determine bar color based on usage percentage
+    let barColor;
+    if (usageStats.percentUsed < 60) {
+      barColor = '#81c784'; // Green
+    } else if (usageStats.percentUsed < 80) {
+      barColor = '#ffd54f'; // Amber
+    } else {
+      barColor = '#e57373'; // Red
+    }
+
+    // Update progress bar
+    usageBarEl.style.width = `${Math.min(usageStats.percentUsed, 100)}%`;
+    usageBarEl.style.background = barColor;
+
+    // Show warning if storage is high
+    if (usageStats.shouldWarn) {
+      const warningLevel = usageStats.isCritical ? 'Critical' : 'Warning';
+      const warningColor = usageStats.isCritical ? '#e57373' : '#ffd54f';
+      usageWarningEl.textContent = `${warningLevel}: Storage is ${usageStats.isCritical ? 'critically' : 'almost'} full. Consider exporting and clearing old jobs.`;
+      usageWarningEl.style.color = warningColor;
+      usageWarningEl.style.marginTop = '8px';
+    } else {
+      usageWarningEl.textContent = '';
+      usageWarningEl.style.marginTop = '0';
+    }
+  } catch (error) {
+    console.error('Load storage usage error:', error);
+    usageTextEl.textContent = 'Failed to load storage usage';
   }
 }
