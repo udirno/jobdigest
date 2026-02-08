@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-05)
 
 ## Current Position
 
-Phase: 7 of 8 (AI Content Generation)
-Plan: 2 of 2
-Status: Phase complete
-Last activity: 2026-02-07 — Completed 07-02-PLAN.md
+Phase: 8 of 8 (Export & Polish)
+Plan: 1 of 2
+Status: In progress
+Last activity: 2026-02-08 — Completed 08-01-PLAN.md
 
-Progress: [████████░░] 87.5%
+Progress: [█████████░] 92.5%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
-- Average duration: 7 minutes
-- Total execution time: 2.4 hours
+- Total plans completed: 19
+- Average duration: 6 minutes
+- Total execution time: 2.5 hours
 
 **By Phase:**
 
@@ -34,10 +34,11 @@ Progress: [████████░░] 87.5%
 | 05 | 2 | 8min | 4min |
 | 06 | 2 | 23min | 12min |
 | 07 | 2 | 10min | 5min |
+| 08 | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (5min), 06-01 (2min), 06-02 (21min), 07-01 (2min), 07-02 (8min)
-- Trend: Phase 7 complete. AI content generation (cover letters and recruiter messages) implemented with Claude API integration
+- Last 5 plans: 06-01 (2min), 06-02 (21min), 07-01 (2min), 07-02 (8min), 08-01 (2min)
+- Trend: Efficient execution continues. CSV export with RFC 4180 compliance added in 2 minutes
 
 *Updated after each plan completion*
 
@@ -196,6 +197,14 @@ Recent decisions affecting current work:
 - Relative time metadata: Shows "Generated 5 min ago" or "Edited today" instead of ISO timestamps for user-friendly display
 - Auto-resize textareas: Dynamically adjust height based on scrollHeight so all content visible without manual resize or scrollbars
 
+**From 08-01 execution:**
+- CSV export: Explicit field whitelist (jobId, title, company, location, url, source, postedAt, fetchedAt, score, scoreReasoning, status, applicationDate, notes, dismissed, coverLetter, coverLetterGenerated, coverLetterEdited, recruiterMessage, recruiterMessageGenerated, recruiterMessageEdited) prevents sensitive data leaks
+- CSV injection prevention: Fields starting with =, +, -, @ prefixed with single quote per OWASP guidance to prevent formula injection in Excel
+- UTF-8 BOM: \uFEFF prepended for Excel compatibility on Windows
+- Blob URL lifecycle: Create blob → trigger download → cleanup after 1s on success or immediately on error
+- Export button feedback: Shows "Exporting..." during operation, "Exported!" for 1.5s on success, "No jobs to export" or "Export failed" for 2s on error
+- RFC 4180 compliance: Proper escaping of commas, quotes, newlines, carriage returns in CSV fields
+
 ### Pending Todos
 
 None yet.
@@ -217,8 +226,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-07T21:40:00 UTC
-Stopped at: Completed Phase 7
+Last session: 2026-02-08T01:28:26 UTC
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
 
-**Phase 7 complete (2/2 plans):** AI content generation fully implemented. Plan 01 created content-generator.js module with Claude Haiku 4.5 integration, prompt caching for cost optimization, anti-cliche constraints (14 banned phrases), and background GENERATE_CONTENT message handler with keep-alive protection. Plan 02 integrated UI into job detail modal with expandable sections, custom instructions input, generate/regenerate buttons with loading states, auto-resizing textareas with debounced auto-save, copy-to-clipboard with visual feedback, and smart regeneration with edit protection. Generated content (cover letters and recruiter messages) persists in storage with metadata tracking. Users can now generate, edit, and copy personalized content directly from any job modal. Phase verified with 14/14 must-haves. Ready for Phase 8 (Export & Polish).
+**Phase 8 in progress (1/2 plans):** Plan 01 implemented CSV export functionality with RFC 4180 compliant escaping and CSV injection prevention. Created csv-exporter.js with escapeCSVField, flattenJobForCSV, generateCSV, downloadCSV, and exportJobs functions. Added Export CSV button to dashboard toolbar with loading/success/error states. UTF-8 BOM prepended for Excel compatibility. Explicit field whitelist prevents sensitive data leaks. Downloads permission added to manifest.json. CSV exports include all job metadata plus generated content (cover letters and recruiter messages). Ready for Plan 02 (final polish).
