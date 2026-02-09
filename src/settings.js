@@ -148,12 +148,7 @@ export async function initSettings(container) {
       <div class="api-section">
         <label class="api-label" for="settings-claude-key">Claude API Key</label>
         <div class="input-group">
-          <div class="input-wrapper">
-            <input type="password" id="settings-claude-key" class="settings-input" value="${apiKeys.claude || ''}" placeholder="sk-ant-api03-...">
-            <button type="button" class="toggle-visibility" data-target="settings-claude-key" aria-label="Toggle visibility">
-              <span class="eye-icon">👁️</span>
-            </button>
-          </div>
+          <input type="password" id="settings-claude-key" class="settings-input" value="${apiKeys.claude || ''}" placeholder="sk-ant-api03-...">
           <button type="button" class="btn-test" data-service="claude">Test</button>
         </div>
         <div class="status-indicator" id="status-settings-claude"></div>
@@ -163,20 +158,10 @@ export async function initSettings(container) {
       <div class="api-section">
         <label class="api-label" for="settings-adzuna-app-id">Adzuna API Key</label>
         <div class="input-group">
-          <div class="input-wrapper">
-            <input type="password" id="settings-adzuna-app-id" class="settings-input" value="${apiKeys.adzuna.appId || ''}" placeholder="App ID">
-            <button type="button" class="toggle-visibility" data-target="settings-adzuna-app-id" aria-label="Toggle visibility">
-              <span class="eye-icon">👁️</span>
-            </button>
-          </div>
+          <input type="password" id="settings-adzuna-app-id" class="settings-input" value="${apiKeys.adzuna.appId || ''}" placeholder="App ID">
         </div>
         <div class="input-group" style="margin-top: 8px;">
-          <div class="input-wrapper">
-            <input type="password" id="settings-adzuna-app-key" class="settings-input" value="${apiKeys.adzuna.appKey || ''}" placeholder="App Key">
-            <button type="button" class="toggle-visibility" data-target="settings-adzuna-app-key" aria-label="Toggle visibility">
-              <span class="eye-icon">👁️</span>
-            </button>
-          </div>
+          <input type="password" id="settings-adzuna-app-key" class="settings-input" value="${apiKeys.adzuna.appKey || ''}" placeholder="App Key">
           <button type="button" class="btn-test" data-service="adzuna">Test</button>
         </div>
         <div class="status-indicator" id="status-settings-adzuna"></div>
@@ -186,12 +171,7 @@ export async function initSettings(container) {
       <div class="api-section">
         <label class="api-label" for="settings-jsearch-key">JSearch API Key</label>
         <div class="input-group">
-          <div class="input-wrapper">
-            <input type="password" id="settings-jsearch-key" class="settings-input" value="${apiKeys.jsearch || ''}" placeholder="RapidAPI Key">
-            <button type="button" class="toggle-visibility" data-target="settings-jsearch-key" aria-label="Toggle visibility">
-              <span class="eye-icon">👁️</span>
-            </button>
-          </div>
+          <input type="password" id="settings-jsearch-key" class="settings-input" value="${apiKeys.jsearch || ''}" placeholder="RapidAPI Key">
           <button type="button" class="btn-test" data-service="jsearch">Test</button>
         </div>
         <div class="status-indicator" id="status-settings-jsearch"></div>
@@ -321,11 +301,6 @@ function attachEventListeners(container) {
     saveTextBtn.addEventListener('click', handleSaveResumeText);
   }
 
-  // Toggle visibility buttons
-  container.querySelectorAll('.toggle-visibility').forEach(btn => {
-    btn.addEventListener('click', handleToggleVisibility);
-  });
-
   // Test connection buttons
   container.querySelectorAll('.btn-test').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -386,17 +361,6 @@ function attachEventListeners(container) {
 /**
  * Toggle password visibility
  */
-function handleToggleVisibility(e) {
-  const targetId = e.currentTarget.dataset.target;
-  const input = document.getElementById(targetId);
-
-  if (input.type === 'password') {
-    input.type = 'text';
-  } else {
-    input.type = 'password';
-  }
-}
-
 /**
  * Test API connection
  * @param {string} service - Service name

@@ -64,11 +64,6 @@ function attachEventListeners() {
   continueBtn.addEventListener('click', handleContinue);
   skipLink.addEventListener('click', handleSkip);
 
-  // Toggle visibility buttons
-  document.querySelectorAll('.toggle-visibility').forEach(btn => {
-    btn.addEventListener('click', handleToggleVisibility);
-  });
-
   // Test connection buttons
   document.getElementById('test-claude').addEventListener('click', () => testConnection('claude'));
   document.getElementById('test-adzuna').addEventListener('click', () => testConnection('adzuna'));
@@ -199,20 +194,6 @@ async function completeOnboarding() {
   setTimeout(() => {
     window.close();
   }, 3000);
-}
-
-/**
- * Toggle password visibility
- */
-function handleToggleVisibility(e) {
-  const targetId = e.currentTarget.dataset.target;
-  const input = document.getElementById(targetId);
-
-  if (input.type === 'password') {
-    input.type = 'text';
-  } else {
-    input.type = 'password';
-  }
 }
 
 /**
