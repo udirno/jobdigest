@@ -310,10 +310,11 @@ async function testApiConnection(service, credentials) {
           headers: {
             'Content-Type': 'application/json',
             'x-api-key': credentials.apiKey,
-            'anthropic-version': '2023-06-01'
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
           },
           body: JSON.stringify({
-            model: 'claude-3-5-sonnet-20241022',
+            model: 'claude-3-haiku-20240307',
             max_tokens: 1,
             messages: [{ role: 'user', content: 'Hi' }]
           })

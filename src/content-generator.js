@@ -53,6 +53,7 @@ export async function generateContent(contentType, job, apiKey, customInstructio
       headers: {
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
         'content-type': 'application/json'
       },
       body: JSON.stringify(requestBody)
