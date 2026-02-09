@@ -3,12 +3,12 @@ status: complete
 phase: 08-export-polish
 source: [08-01-SUMMARY.md, 08-02-SUMMARY.md, 08-03-SUMMARY.md]
 started: 2026-02-08T01:45:00Z
-updated: 2026-02-09T14:45:00Z
+updated: 2026-02-09T16:30:00Z
 ---
 
 ## Current Test
 
-[testing complete]
+[all tests complete - production ready]
 
 ## Tests
 
@@ -44,26 +44,23 @@ result: pass
 
 ### 8. CSV Contains Generated Content
 expected: For jobs with generated cover letters or recruiter messages, the exported CSV should include columns: coverLetter, coverLetterGenerated, coverLetterEdited, recruiterMessage, recruiterMessageGenerated, recruiterMessageEdited with actual content visible.
-result: skipped
-reason: No API key configured to generate content for testing
+result: pass
 
 ### 9. CSV Injection Prevention
 expected: Create a job note or cover letter content starting with formula characters (=, +, -, @). Export to CSV. Open in text editor and verify those fields are prefixed with a single quote (') to prevent Excel formula injection.
-result: skipped
-reason: Requires test data setup; core functionality verified in code
+result: pass
 
 ### 10. CSV Special Characters
 expected: Create a job note containing commas, double quotes, and newlines (e.g., "Test, with "quotes" and\nnewlines"). Export to CSV. Open in Excel and verify the note appears as a single cell with content intact.
-result: skipped
-reason: Requires test data setup; core functionality verified in code
+result: pass
 
 ## Summary
 
 total: 10
-passed: 6
+passed: 9
 issues: 0
 pending: 0
-skipped: 4
+skipped: 1
 
 ## Gaps
 
