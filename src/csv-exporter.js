@@ -126,7 +126,10 @@ export async function downloadCSV(csvString, filename) {
 export async function exportJobs() {
   // Get all jobs from storage
   const jobsMap = await storage.getJobs();
-  const jobs = Object.values(jobsMap);
+  const allJobs = Object.values(jobsMap);
+
+  // Filter out dismissed and passed jobs (matches dashboard visibility logic in filters.js)
+  const jobs = allJobs.filter(job => job.dismissed !== true && job.status !== 'passed');
 
   if (jobs.length === 0) {
     throw new Error('No jobs to export');
