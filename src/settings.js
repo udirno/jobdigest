@@ -293,19 +293,14 @@ export async function initSettings(container) {
 export async function loadApiKeys() {
   const keys = await storage.getApiKeys();
 
-  // Mask keys for display (show first 8 + ... + last 4 chars)
-  const maskKey = (key) => {
-    if (!key || key.length < 12) return key;
-    return `${key.substring(0, 8)}...${key.substring(key.length - 4)}`;
-  };
-
+  // Return unmasked keys for input fields (they're password-type inputs, so already hidden)
   return {
-    claude: maskKey(keys.claude),
+    claude: keys.claude || '',
     adzuna: {
-      appId: maskKey(keys.adzuna?.appId || ''),
-      appKey: maskKey(keys.adzuna?.appKey || '')
+      appId: keys.adzuna?.appId || '',
+      appKey: keys.adzuna?.appKey || ''
     },
-    jsearch: maskKey(keys.jsearch)
+    jsearch: keys.jsearch || ''
   };
 }
 
