@@ -99,25 +99,21 @@ export function generateCSV(jobs) {
  * @returns {Promise<number>} Download ID
  */
 export async function downloadCSV(csvString, filename) {
-  // Create blob with CSV content
-  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-  const blobUrl = URL.createObjectURL(blob);
+  // Convert CSV string to base64-encoded data URL
+  // The encodeURIComponent + unescape + btoa chain handles UTF-8 characters correctly
+  const base64Content = btoa(unescape(encodeURIComponent(csvString)));
+  const dataUrl = `data:text/csv;charset=utf-8;base64,${base64Content}`;
 
   try {
-    // Trigger download
+    // Trigger download with data URL (works in Manifest V3, unlike blob URLs)
     const downloadId = await chrome.downloads.download({
-      url: blobUrl,
+      url: dataUrl,
       filename: filename,
       saveAs: true
     });
 
-    // Clean up blob URL after 1 second
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-
     return downloadId;
   } catch (error) {
-    // Clean up immediately on error
-    URL.revokeObjectURL(blobUrl);
     throw error;
   }
 }
